@@ -51,7 +51,7 @@ class Foo {
 
   Map<String, dynamic> toJson() {
     var result = <String, dynamic>{};
-    result['bars'] = _jc.fromMap(bars, (e) => e?.toJson());
+    result['bars'] = _jc.fromMap(bars, (e) => e.toJson());
     return result;
   }
 }
@@ -100,7 +100,7 @@ class Order {
     result['amount'] = amount;
     result['is_shipped'] = isShipped;
     result['date'] = date?.toIso8601String();
-    result['items'] = _jc.fromList(items, (e) => e?.toJson());
+    result['items'] = _jc.fromList(items, (e) => e.toJson());
     return result;
   }
 }
@@ -124,7 +124,7 @@ class OrderItem {
     var result = <String, dynamic>{};
     result['quantity'] = quantity;
     result['price'] = price;
-    result['product'] = product?.toJson();
+    result['product'] = product.toJson();
     return result;
   }
 }
@@ -151,6 +151,7 @@ class Product {
 }
 
 class Super {
+  Map<String, List<int>> map2;
   DateTime date;
   String string;
   bool boolean;
@@ -163,6 +164,7 @@ class Super {
 
   factory Super.fromJson(Map map) {
     var result = Super();
+    result.map2 = _jc.toMap(map['map2'], (e) => _jc.toList(e, (e) => e as int));
     result.date = _jc.toDateTime(map['date']);
     result.string = map['string'] as String;
     result.boolean = map['boolean'] as bool;
@@ -177,15 +179,15 @@ class Super {
 
   Map<String, dynamic> toJson() {
     var result = <String, dynamic>{};
+    result['map2'] = _jc.fromMap(map2, (e) => _jc.fromList(e, (e) => e));
     result['date'] = date?.toIso8601String();
     result['string'] = string;
     result['boolean'] = boolean;
-    result['map'] =
-        _jc.fromMap(map, (e) => _jc.fromList(e, (e) => e?.toJson()));
+    result['map'] = _jc.fromMap(map, (e) => _jc.fromList(e, (e) => e.toJson()));
     result['float'] = float;
     result['integer'] = integer;
     result['list'] =
-        _jc.fromList(list, (e) => _jc.fromMap(e, (e) => e?.toJson()));
+        _jc.fromList(list, (e) => _jc.fromMap(e, (e) => e.toJson()));
     return result;
   }
 }
@@ -198,7 +200,11 @@ class _JsonConverter {
 
     var result = [];
     for (var element in data) {
-      var value = toJson(element);
+      var value;
+      if (element != null) {
+        value = toJson(element);
+      }
+
       result.add(value);
     }
 
@@ -212,7 +218,11 @@ class _JsonConverter {
 
     var result = <String, dynamic>{};
     for (var key in data.keys) {
-      var value = toJson(data[key]);
+      var value = data[key];
+      if (value != null) {
+        value = toJson(data[key]);
+      }
+
       result[key.toString()] = value;
     }
 

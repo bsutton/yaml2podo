@@ -27,3 +27,4 @@ Super:
   string: String
   list: List<Map<String, Bar>>
   map: Map<String, List<Bar>>
+  map2: Map<String, List<int>>

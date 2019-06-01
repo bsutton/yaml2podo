@@ -10,7 +10,11 @@ class _JsonConverter {
 
     var result = [];
     for (var element in data) {
-      var value = toJson(element);
+      var value;
+      if (element != null) {
+        value = toJson(element);
+      }
+
       result.add(value);
     }
 
@@ -24,7 +28,11 @@ class _JsonConverter {
 
     var result = <String, dynamic>{};
     for (var key in data.keys) {
-      var value = toJson(data[key]);
+      var value = data[key];
+      if (value != null) {
+        value = toJson(data[key]);
+      }
+
       result[key.toString()] = value;
     }
 
@@ -92,8 +100,7 @@ class _JsonConverter {
 
     return result;
   }
-}
-''';
+}''';
 
   bool _camelize;
 
@@ -515,7 +522,7 @@ class _JsonConverter {
       case _TypeKind.bottom:
         return '$source';
       case _TypeKind.custom:
-        return '$source?.toJson()';
+        return '$source.toJson()';
       case _TypeKind.iterable:
       case _TypeKind.list:
         var typeArgs = type.typeArgs;

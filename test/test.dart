@@ -128,11 +128,13 @@ void _testJsonSerializer() {
     foo.bars = {};
     foo.bars['0'] = Bar()..i = 0;
     foo.bars['1'] = Bar()..i = 1;
+    foo.bars['2'] = null;
     var jsonOrder = foo.toJson();
     var expected = {
       'bars': {
         '0': {'i': 0},
-        '1': {'i': 1}
+        '1': {'i': 1},
+        '2': null
       }
     };
     expect(jsonOrder, expected);
@@ -161,16 +163,19 @@ void _testJsonSerializer() {
     value.map = {};
     value.map['0'] = [];
     value.map['0'].add(Bar()..i = 123);
+    value.map['1'] = null;
     value.string = 'hello';
     var jsonValue = value.toJson();
     var expected = {
       'date': value.date.toIso8601String(),
       'string': 'hello',
       'boolean': true,
-      'map': {
+      'map2': null,
+      "map": {
         '0': [
           {'i': 123}
-        ]
+        ],
+        '1': null
       },
       'float': 1.0,
       'integer': 2,
