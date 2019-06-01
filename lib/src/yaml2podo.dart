@@ -3,6 +3,18 @@ part of '../yaml2podo.dart';
 class Yaml2PodoGenerator {
   static const String _converterTemplate = '''
 class _JsonConverter {
+  String fromDateTime(dynamic data) {
+    if (data == null) {
+      return null;
+    }
+
+    if (data is DateTime) {
+      return data.toIso8601String();
+    }
+
+    return data as String;
+  }
+
   List fromList(dynamic data, dynamic Function(dynamic) toJson) {
     if (data == null) {
       return null;
@@ -101,6 +113,8 @@ class _JsonConverter {
     return result;
   }
 }''';
+
+  final String version = '0.1.1';
 
   bool _camelize;
 
@@ -322,91 +336,6 @@ class _JsonConverter {
 
     lines.addAll(LineSplitter().convert(_converterTemplate).toList());
     return lines;
-
-    //
-    //
-    //
-
-    for (var class_ in classes) {
-      var className = class_.fullName;
-      lines.add('  ..addType(() => ${className}())');
-      for (var prop in class_.props.values) {
-        accessors.add(prop.name);
-      }
-    }
-
-    for (var type in _types.values) {
-      var typeName = type.fullName;
-      var typeArgs = type.typeArgs;
-      switch (type.kind) {
-        case _TypeKind.iterable:
-        case _TypeKind.list:
-          var typeArg0 = typeArgs[0].fullName;
-          lines.add(
-              '  ..addIterableType<${typeName}, ${typeArg0}>(() => <${typeArg0}>[])');
-          break;
-        case _TypeKind.map:
-          var typeArg0 = typeArgs[0].fullName;
-          var typeArg1 = typeArgs[1].fullName;
-          lines.add(
-              '  ..addMapType<${typeName}, ${typeArg0}, ${typeArg1}>(() => <${typeArg0}, ${typeArg1}>{})');
-          break;
-        default:
-          throw StateError('Internal error');
-          break;
-      }
-    }
-
-    for (var name in accessors.toList()..sort()) {
-      var escaped = _escapeIdentifier(name);
-      lines.add(
-          '  ..addAccessor(\'${escaped}\', (o) => o.${name}, (o, v) => o.${name} = v)');
-    }
-
-    for (var class_ in classes) {
-      var className = class_.fullName;
-      for (var prop in class_.props.values) {
-        var propName = prop.name;
-        var propType = prop.type.fullName;
-        var alias = '';
-        if (prop.alias != null) {
-          var escaped = _escapeIdentifier(prop.alias);
-          escaped = escaped.replaceAll('\'', '\\\'');
-          alias = ', alias: \'${escaped}\'';
-        }
-
-        var escaped = _escapeIdentifier(propName);
-        lines.add(
-            '  ..addProperty<${className}, ${propType}>(\'${escaped}\'${alias})');
-      }
-    }
-
-    lines.last = lines.last + ';';
-    lines.add('');
-    for (var class_ in classes) {
-      var className = class_.fullName;
-      lines.add('class ${className} {');
-      for (var prop in class_.props.values) {
-        var propTypeName = prop.type.fullName;
-        var propName = prop.name;
-        lines.add('  ${propTypeName} ${propName};');
-      }
-
-      lines.add('');
-      lines.add('  ${className}();');
-      lines.add('');
-      lines.add('  factory ${className}.fromJson(Map map) {');
-      lines.add('    return json.unmarshal<${className}>(map);');
-      lines.add('  }');
-      lines.add('');
-      lines.add('  Map<String, dynamic> toJson() {');
-      lines.add('    return json.marshal(this) as Map<String, dynamic>;');
-      lines.add('  }');
-      lines.add('}');
-      lines.add('');
-    }
-
-    return lines;
   }
 
   void _analyzeType(_TypeInfo type) {
@@ -537,7 +466,7 @@ class _JsonConverter {
       case _TypeKind.primitive:
         switch (typeName) {
           case 'DateTime':
-            return '$source.toIso8601String()';
+            return '$_converterVariable.fromDateTime($source)';
         }
 
         return '$source';
