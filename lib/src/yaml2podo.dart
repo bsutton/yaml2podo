@@ -537,7 +537,7 @@ class _JsonConverter {
       case _TypeKind.primitive:
         switch (typeName) {
           case 'DateTime':
-            return '$source?.toIso8601String()';
+            return '$source.toIso8601String()';
         }
 
         return '$source';

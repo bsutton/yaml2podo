@@ -78,7 +78,7 @@ class ObjectWithMap {
 
   Map<String, dynamic> toJson() {
     var result = <String, dynamic>{};
-    result['products'] = _jc.fromMap(products, (e) => e?.toJson());
+    result['products'] = _jc.fromMap(products, (e) => e.toJson());
     return result;
   }
 }
@@ -102,8 +102,8 @@ class Order {
   Map<String, dynamic> toJson() {
     var result = <String, dynamic>{};
     result['amount'] = amount;
-    result['date'] = date?.toIso8601String();
-    result['items'] = _jc.fromList(items, (e) => e?.toJson());
+    result['date'] = date.toIso8601String();
+    result['items'] = _jc.fromList(items, (e) => e.toJson());
     return result;
   }
 }
@@ -127,7 +127,7 @@ class OrderItem {
     var result = <String, dynamic>{};
     result['qty'] = quantity;
     result['price'] = price;
-    result['product'] = product?.toJson();
+    result['product'] = product.toJson();
     return result;
   }
 }

@@ -60,7 +60,7 @@ class Order {
   Map<String, dynamic> toJson() {
     var result = <String, dynamic>{};
     result['amount'] = amount;
-    result['date'] = date?.toIso8601String();
+    result['date'] = date.toIso8601String();
     result['items'] = _jc.fromList(items, (e) => e.toJson());
     return result;
   }

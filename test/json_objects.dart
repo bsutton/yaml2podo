@@ -99,7 +99,7 @@ class Order {
     var result = <String, dynamic>{};
     result['amount'] = amount;
     result['is_shipped'] = isShipped;
-    result['date'] = date?.toIso8601String();
+    result['date'] = date.toIso8601String();
     result['items'] = _jc.fromList(items, (e) => e.toJson());
     return result;
   }
@@ -180,7 +180,7 @@ class Super {
   Map<String, dynamic> toJson() {
     var result = <String, dynamic>{};
     result['map2'] = _jc.fromMap(map2, (e) => _jc.fromList(e, (e) => e));
-    result['date'] = date?.toIso8601String();
+    result['date'] = date.toIso8601String();
     result['string'] = string;
     result['boolean'] = boolean;
     result['map'] = _jc.fromMap(map, (e) => _jc.fromList(e, (e) => e.toJson()));
