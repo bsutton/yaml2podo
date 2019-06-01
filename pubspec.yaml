@@ -1,5 +1,5 @@
 name: yaml2podo
-version: 0.1.1
+version: 0.1.2
 author: Andrew Mezoni <andrew.mezoni@gmail.com>
 description: The `yaml2podo` is a generator and utility (all in one) that generates PODO classes from object prototypes specified in `yaml` format
 homepage: https://github.com/mezoni/yaml2podo

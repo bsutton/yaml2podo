@@ -40,9 +40,10 @@ class _JsonConverter {
 
     var result = <String, dynamic>{};
     for (var key in data.keys) {
-      var value = data[key];
-      if (value != null) {
-        value = toJson(data[key]);
+      var value;
+      var element = data[key];
+      if (element != null) {
+        value = toJson(element);
       }
 
       result[key.toString()] = value;
@@ -114,7 +115,7 @@ class _JsonConverter {
   }
 }''';
 
-  final String version = '0.1.1';
+  final String version = '0.1.2';
 
   bool _camelize;
 
