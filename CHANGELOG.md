@@ -1,3 +1,7 @@
+## 0.1.7
+
+- Fixed bug in `Yaml2PodoGenerator`
+
 ## 0.1.6
 
 - Minor changes in `convertToIdentifier()`

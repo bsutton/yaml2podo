@@ -23,6 +23,8 @@ Super:
   boolean: bool
   date: DateTime 
   float: double
+  foo: Foo
+  foo2: Foo
   integer: int
   string: String
   list: List<Map<String, Bar>>

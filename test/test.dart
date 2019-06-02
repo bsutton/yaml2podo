@@ -174,6 +174,7 @@ void _testJsonSerializer() {
     value.boolean = true;
     value.date = DateTime.now();
     value.float = 1.0;
+    value.foo2 = Foo();
     value.integer = 2;
     value.list = [];
     value.list.add({});
@@ -185,6 +186,8 @@ void _testJsonSerializer() {
     value.string = 'hello';
     var jsonValue = value.toJson();
     var expected = {
+      'foo': null,
+      'foo2': {'bars': null},
       'date': value.date.toIso8601String(),
       'string': 'hello',
       'boolean': true,

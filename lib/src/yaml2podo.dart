@@ -113,9 +113,17 @@ class _JsonConverter {
 
     return result;
   }
+
+  T toObject<T>(dynamic data, T Function(dynamic) fromJson) {
+    if (data == null) {
+      return null;
+    }
+
+    return fromJson(data);
+  }
 }''';
 
-  final String version = '0.1.6';
+  final String version = '0.1.7';
 
   bool _camelize;
 
@@ -419,7 +427,8 @@ class _JsonConverter {
       case _TypeKind.bottom:
         return '$source';
       case _TypeKind.custom:
-        return '$typeName.fromJson($source as Map)';
+        var reader = '$typeName.fromJson(e as Map)';
+        return '$_converterVariable.toObject($source, (e) => $reader)';
       case _TypeKind.iterable:
       case _TypeKind.list:
         var typeArgs = type.typeArgs;
@@ -451,7 +460,7 @@ class _JsonConverter {
       case _TypeKind.bottom:
         return '$source';
       case _TypeKind.custom:
-        return '$source.toJson()';
+        return '$source?.toJson()';
       case _TypeKind.iterable:
       case _TypeKind.list:
         var typeArgs = type.typeArgs;
