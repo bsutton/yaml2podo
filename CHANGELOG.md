@@ -1,3 +1,9 @@
+## 0.1.5
+
+- Fixed bugs in `Yaml2PodoGenerator`
+- Fixed bugs in `camelizeIdentifier()`
+- Fixed bugs in `convertToIdentifier()`
+
 ## 0.1.4
 
 - Minor improvements in source code

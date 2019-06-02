@@ -115,7 +115,7 @@ class _JsonConverter {
   }
 }''';
 
-  final String version = '0.1.4';
+  final String version = '0.1.5';
 
   bool _camelize;
 
@@ -499,6 +499,10 @@ class _JsonConverter {
         }
 
         if (_primitiveTypeNames.contains(name)) {
+          return true;
+        }
+
+        if (const ['dynamic', 'Object'].contains(name)) {
           return true;
         }
 

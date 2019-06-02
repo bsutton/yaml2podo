@@ -15,7 +15,7 @@ bool alphanum(int c) {
     throw ArgumentError.notNull('c');
   }
 
-  if (c >= 48 && c <= 57 || c >= 65 && c <= 90 || c >= 97 && c <= 122) {
+  if (alpha(c) || digit(c)) {
     return true;
   }
 
@@ -61,12 +61,15 @@ String camelizeIdentifier(String ident) {
         }
       }
     } else {
+      var s2 = s;
       if (needCapitalize) {
-        needCapitalize = false;
-        sb.write(s.toUpperCase());
-      } else {
-        sb.write(s);
+        s2 = s.toUpperCase();
+        if (s2 != s) {
+          needCapitalize = false;
+        }
       }
+
+      sb.write(s2);
     }
   }
 
@@ -118,9 +121,16 @@ String convertToIdentifier(String str, String replacement) {
 
   var pos = 0;
   var sb = StringBuffer();
+  if (digit(str.codeUnitAt(pos))) {
+    var s = str[pos];
+    sb.write(replacement);
+    sb.write(s);
+    pos++;
+  }
+
   while (pos < str.length) {
     var c = str.codeUnitAt(pos);
-    if (!(alpha(c) || c == 95)) {
+    if (!(alphanum(c) || c == 95)) {
       sb.write(replacement);
       pos++;
     } else {
@@ -140,6 +150,18 @@ String convertToIdentifier(String str, String replacement) {
 
   var result = sb.toString();
   return result;
+}
+
+bool digit(int c) {
+  if (c == null) {
+    throw ArgumentError.notNull('c');
+  }
+
+  if (c >= 48 && c <= 57) {
+    return true;
+  }
+
+  return false;
 }
 
 String makePublicIdentifier(String ident, String option) {

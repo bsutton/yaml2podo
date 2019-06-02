@@ -56,16 +56,26 @@ void _testBinUtils() {
     expect(result, '_abc_Def');
     result = _utils.camelizeIdentifier('__abc__def');
     expect(result, '__abc_Def');
+    result = _utils.camelizeIdentifier('_1abc');
+    expect(result, '_1abc');
+    result = _utils.camelizeIdentifier('\$1abc');
+    expect(result, '\$1abc');
+    result = _utils.camelizeIdentifier('abc_1def');
+    expect(result, 'abc1Def');
+    result = _utils.camelizeIdentifier('_abc_\$def');
+    expect(result, '_abc\$Def');
   });
 
   test('_utils: convertToIdentifier()', () {
     var replacement = '\$';
     var result = _utils.convertToIdentifier('1abc', replacement);
-    expect(result, '\$abc');
+    expect(result, '\$1abc');
     result = _utils.convertToIdentifier('a:bc', replacement);
     expect(result, 'a\$bc');
     result = _utils.convertToIdentifier('abc?', replacement);
     expect(result, 'abc\$');
+    result = _utils.convertToIdentifier('3', replacement);
+    expect(result, '\$3');
   });
 
   test('_utils: makePublicIdentifier()', () {
