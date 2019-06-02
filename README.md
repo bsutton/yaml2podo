@@ -1,8 +1,8 @@
 # yaml2podo
 
-The `yaml2podo` is a generator and utility (all in one) that generates PODO classes from object prototypes specified in `yaml` format
+The `yaml2podo` is a generator and utility (all in one) that generates PODO classes to convert between JSON and Dart objects
 
-Version 0.1.2
+Version 0.1.3
 
 ### Example of use.
 
