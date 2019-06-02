@@ -76,6 +76,14 @@ void _testBinUtils() {
     expect(result, 'abc\$');
     result = _utils.convertToIdentifier('3', replacement);
     expect(result, '\$3');
+    result = _utils.convertToIdentifier('person-list', replacement);
+    expect(result, 'person_list');
+    result = _utils.convertToIdentifier('-', replacement);
+    expect(result, '\$');
+    result = _utils.convertToIdentifier('-1', replacement);
+    expect(result, '\$1');
+    result = _utils.convertToIdentifier('-a-', replacement);
+    expect(result, '\$a_');
   });
 
   test('_utils: makePublicIdentifier()', () {

@@ -115,7 +115,7 @@ class _JsonConverter {
   }
 }''';
 
-  final String version = '0.1.5';
+  final String version = '0.1.6';
 
   bool _camelize;
 

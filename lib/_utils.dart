@@ -119,6 +119,7 @@ String convertToIdentifier(String str, String replacement) {
     throw ArgumentError.notNull('replacement');
   }
 
+  str = str[0] + str.substring(1).replaceAll('-', '_');
   var pos = 0;
   var sb = StringBuffer();
   if (digit(str.codeUnitAt(pos))) {
