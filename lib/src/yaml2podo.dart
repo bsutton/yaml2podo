@@ -115,7 +115,7 @@ class _JsonConverter {
   }
 }''';
 
-  final String version = '0.1.2';
+  final String version = '0.1.4';
 
   bool _camelize;
 
@@ -270,7 +270,6 @@ class _JsonConverter {
       }
     }
 
-    var accessors = Set<String>();
     var classes = _classes.values.toList();
     classes.sort((e1, e2) => e1.fullName.compareTo(e2.fullName));
     var lines = <String>[];

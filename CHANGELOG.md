@@ -1,3 +1,7 @@
+## 0.1.4
+
+- Minor improvements in source code
+
 ## 0.1.3
 
 - Updated description for a more accurate understanding of the purpose of this software
