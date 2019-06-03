@@ -9,12 +9,8 @@ void main() {
 }
 
 final List<Product> _products = [
-  Product()
-    ..id = 0
-    ..name = 'Product 0',
-  Product()
-    ..id = 1
-    ..name = 'Product 1'
+  Product(id: 0, name: 'Product 0'),
+  Product(id: 1, name: 'Product 1')
 ];
 
 void _testBinUtils() {
@@ -104,17 +100,11 @@ void _testBinUtils() {
 
 void _testJsonSerializer() {
   test('Serialize "Order" instance', () {
-    var order = Order();
-    order.amount = 0;
-    order.date = DateTime.now();
-    order.items = [];
-    order.isShipped = true;
+    var order =
+        Order(amount: 0, date: DateTime.now(), items: [], isShipped: true);
     for (var i = 0; i < _products.length; i++) {
       var product = _products[i];
-      var item = OrderItem();
-      item.product = product;
-      item.price = i;
-      item.quantity = i;
+      var item = OrderItem(price: i, product: product, quantity: i);
       order.items.add(item);
     }
 
@@ -146,10 +136,9 @@ void _testJsonSerializer() {
   });
 
   test('Serialize "Foo" instance', () {
-    var foo = Foo();
-    foo.bars = {};
-    foo.bars['0'] = Bar()..i = 0;
-    foo.bars['1'] = Bar()..i = 1;
+    var foo = Foo(bars: {});
+    foo.bars['0'] = Bar(i: 0);
+    foo.bars['1'] = Bar(i: 1);
     foo.bars['2'] = null;
     var jsonOrder = foo.toJson();
     var expected = {
@@ -164,7 +153,7 @@ void _testJsonSerializer() {
   });
 
   test('Serialize "Alias" instance', () {
-    var value = Alias()..clazz = 'foo';
+    var value = Alias(clazz: 'foo');
     var jsonValue = value.toJson();
     var expected = {
       'class': 'foo',
@@ -174,20 +163,22 @@ void _testJsonSerializer() {
   });
 
   test('Serialize "Super" instance', () {
-    var value = Super();
-    value.boolean = true;
-    value.date = DateTime.now();
-    value.float = 1.0;
-    value.foo2 = Foo();
-    value.integer = 2;
-    value.list = [];
+    var value = Super(
+        boolean: true,
+        date: DateTime.now(),
+        float: 1.0,
+        foo2: Foo(),
+        integer: 2,
+        list: [],
+        map: {},
+        string: 'hello');
+
     value.list.add({});
-    value.list[0]["bar"] = Bar()..i = 99;
-    value.map = {};
+
     value.map['0'] = [];
-    value.map['0'].add(Bar()..i = 123);
+    value.map['0'].add(Bar(i: 123));
     value.map['1'] = null;
-    value.string = 'hello';
+    value.list[0]["bar"] = Bar(i: 99);
     var jsonValue = value.toJson();
     var expected = {
       'foo': null,

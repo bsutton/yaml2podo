@@ -1,4 +1,8 @@
-## 0.1.8
+## 0.1.10
+
+- Added option to `Yaml2PodoGenerator` to generate immutable fields (default: on)
+
+## 0.1.9
 
 - Minor changes in `Yaml2PodoGenerator` (converter methods have been converted to static methods)
 - Minor improvements in `Yaml2PodoGenerator` (unused converter methods are not generated)

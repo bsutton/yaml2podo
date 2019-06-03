@@ -1,6 +1,12 @@
 part of '../yaml2podo.dart';
 
 class Yaml2PodoGenerator {
+  static const String _factoryFromJson = '''
+  factory {{NAME}}.fromJson(Map map) {
+    return {{NAME}}(
+{{ARGUMENTS}});
+  }''';
+
   static const String _methodFromDateTime = '''
 String _fromDateTime(dynamic data) {
   if (data == null) {
@@ -111,13 +117,15 @@ T _toObject<T>(dynamic data, T Function(dynamic) fromJson) {
 
   Set<String> _usedMethods;
 
-  final String version = '0.1.9';
+  final String version = '0.1.10';
 
   bool _camelize;
 
   Map<String, _TypeInfo> _classes;
 
   _TypeInfo _dynamicType;
+
+  bool _immutable;
 
   Set<String> _primitiveTypeNames;
 
@@ -127,12 +135,17 @@ T _toObject<T>(dynamic data, T Function(dynamic) fromJson) {
 
   Map<String, _TypeInfo> _types;
 
-  Yaml2PodoGenerator({bool camelize = true}) {
+  Yaml2PodoGenerator({bool camelize = true, bool immutable = true}) {
     if (camelize == null) {
       throw ArgumentError.notNull('camelize');
     }
 
+    if (immutable == null) {
+      throw ArgumentError.notNull('immutable');
+    }
+
     _camelize = camelize;
+    _immutable = immutable;
     _dynamicType = _createDynmaicType();
     _classes = {};
     _types = {};
@@ -187,6 +200,41 @@ T _toObject<T>(dynamic data, T Function(dynamic) fromJson) {
     for (var name in _primitiveTypeNames) {
       _primitiveTypes[name] = _createPrimitiveType(name);
     }
+  }
+
+  List<String> _generateContructor(_TypeInfo type) {
+    var result = <String>[];
+    var paramters = <String>[];
+    for (var prop in type.props.values) {
+      paramters.add('this.${prop.name}');
+    }
+
+    result.add('  ${type.fullName}({${paramters.join(', ')}});');
+    return result;
+  }
+
+  List<String> _generateFactoryFromJson(_TypeInfo type) {
+    var template = _factoryFromJson;
+    template = template.replaceAll('{{NAME}}', type.fullName);
+    var arguments = <String>[];
+    var props = type.props;
+    for (var prop in props.values) {
+      var propName = prop.name;
+      var propType = prop.type;
+      var alias = prop.alias;
+      if (alias != null) {
+        var escaped = _escapeIdentifier(alias);
+        alias = escaped.replaceAll('\'', '\\\'');
+      } else {
+        alias = propName;
+      }
+
+      var reader = _getReader('map[\'$alias\']', propType, true);
+      arguments.add('      $propName: $reader');
+    }
+
+    template = template.replaceAll('{{ARGUMENTS}}', arguments.join(',\n'));
+    return LineSplitter().convert(template).toList();
   }
 
   List<String> generate(Map source, {bool camelize = true}) {
@@ -274,32 +322,18 @@ T _toObject<T>(dynamic data, T Function(dynamic) fromJson) {
       for (var prop in class_.props.values) {
         var propName = prop.name;
         var propType = prop.type.fullName;
-        lines.add('  ${propType} ${propName};');
+        if (_immutable) {
+          lines.add('  final ${propType} ${propName};');
+        } else {
+          lines.add('  ${propType} ${propName};');
+        }
       }
 
       lines.add('');
-      lines.add('  ${className}();');
+      lines.addAll(_generateContructor(class_));
       lines.add('');
       //
-      lines.add('  factory ${className}.fromJson(Map map) {');
-      lines.add('    var result = ${className}();');
-      for (var prop in class_.props.values) {
-        var propName = prop.name;
-        var propType = prop.type;
-        var alias = prop.alias;
-        if (alias != null) {
-          var escaped = _escapeIdentifier(alias);
-          alias = escaped.replaceAll('\'', '\\\'');
-        } else {
-          alias = propName;
-        }
-
-        var reader = _getReader('map[\'$alias\']', propType, true);
-        lines.add('    result.$propName = $reader;');
-      }
-
-      lines.add('    return result;');
-      lines.add('}');
+      lines.addAll(_generateFactoryFromJson(class_));
       lines.add('');
       //
       lines.add('  Map<String, dynamic> toJson() {');
@@ -320,7 +354,7 @@ T _toObject<T>(dynamic data, T Function(dynamic) fromJson) {
       }
 
       lines.add('    return result;');
-      lines.add('}');
+      lines.add('  }');
       lines.add('');
       //
       lines.add('}');

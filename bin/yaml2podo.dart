@@ -10,6 +10,9 @@ void main(List<String> args) {
   var argParser = ArgParser();
   argParser.addFlag('camelize',
       defaultsTo: true, help: 'Allows caramelization of property names');
+  argParser.addFlag('immutable',
+      defaultsTo: true,
+      help: 'Indicates that all properties must be declared as immutable');
   argParser.addFlag('help',
       defaultsTo: false, help: 'Displays help information');
   ArgResults argResults;
@@ -37,11 +40,12 @@ void main(List<String> args) {
   }
 
   var camelize = argResults['camelize'] as bool;
+  var immutable = argResults['immutable'] as bool;
   var inputFileName = argResults.rest[0];
   var inputFile = File(inputFileName);
   var data = inputFile.readAsStringSync();
   var source = _yaml.loadYaml(data);
-  var generator = Yaml2PodoGenerator(camelize: camelize);
+  var generator = Yaml2PodoGenerator(camelize: camelize, immutable: immutable);
   var result = generator.generate(source as Map);
   var dirName = _path.dirname(inputFileName);
   var outputFileName = _path.basenameWithoutExtension(inputFileName);
@@ -53,7 +57,8 @@ void main(List<String> args) {
   lines.add('// https://pub.dev/packages/yaml2podo');
   lines.add('');
   lines.addAll(result);
-  var formatter = new DartFormatter();
-  var code = formatter.format(lines.join('\n'));
+  //var formatter = new DartFormatter();
+  //var code = formatter.format(lines.join('\n'));
+  var code = lines.join('\n');
   outputFile.writeAsStringSync(code);
 }
