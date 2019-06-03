@@ -117,7 +117,7 @@ T _toObject<T>(dynamic data, T Function(dynamic) fromJson) {
 
   Set<String> _usedMethods;
 
-  final String version = '0.1.10';
+  final String version = '0.1.11';
 
   bool _camelize;
 

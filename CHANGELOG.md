@@ -1,3 +1,7 @@
+## 0.1.11
+
+- Restored code formatting of generated code in `bin\yaml2podo.dart`
+
 ## 0.1.10
 
 - Added option to `Yaml2PodoGenerator` to generate immutable fields (default: on)

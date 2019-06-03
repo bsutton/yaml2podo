@@ -57,8 +57,8 @@ void main(List<String> args) {
   lines.add('// https://pub.dev/packages/yaml2podo');
   lines.add('');
   lines.addAll(result);
-  //var formatter = new DartFormatter();
-  //var code = formatter.format(lines.join('\n'));
-  var code = lines.join('\n');
+  var formatter = new DartFormatter();
+  var code = formatter.format(lines.join('\n'));
+  //var code = lines.join('\n');
   outputFile.writeAsStringSync(code);
 }
