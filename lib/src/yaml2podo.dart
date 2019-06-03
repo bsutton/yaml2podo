@@ -1,135 +1,121 @@
 part of '../yaml2podo.dart';
 
 class Yaml2PodoGenerator {
-  static const String _converterTemplate = '''
-class _JsonConverter {
-  String fromDateTime(dynamic data) {
-    if (data == null) {
-      return null;
-    }
-
-    if (data is DateTime) {
-      return data.toIso8601String();
-    }
-
-    return data as String;
+  static const String _methodFromDateTime = '''
+String _fromDateTime(dynamic data) {
+  if (data == null) {
+    return null;
   }
-
-  List fromList(dynamic data, dynamic Function(dynamic) toJson) {
-    if (data == null) {
-      return null;
-    }
-
-    var result = [];
-    for (var element in data) {
-      var value;
-      if (element != null) {
-        value = toJson(element);
-      }
-
-      result.add(value);
-    }
-
-    return result;
+  if (data is DateTime) {
+    return data.toIso8601String();
   }
-
-  Map<String, dynamic> fromMap(dynamic data, dynamic Function(dynamic) toJson) {
-    if (data == null) {
-      return null;
-    }
-
-    var result = <String, dynamic>{};
-    for (var key in data.keys) {
-      var value;
-      var element = data[key];
-      if (element != null) {
-        value = toJson(element);
-      }
-
-      result[key.toString()] = value;
-    }
-
-    return result;
-  }
-
-  DateTime toDateTime(dynamic data) {
-    if (data == null) {
-      return null;
-    }
-
-    if (data is String) {
-      return DateTime.parse(data);
-    }
-
-    return data as DateTime;
-  }
-
-  double toDouble(dynamic data) {
-    if (data == null) {
-      return null;
-    }
-
-    if (data is int) {
-      return data.toDouble();
-    }
-
-    return data as double;
-  }
-
-  List<T> toList<T>(dynamic data, T Function(dynamic) fromJson) {
-    if (data == null) {
-      return null;
-    }
-
-    var result = <T>[];
-    for (var element in data) {
-      T value;
-      if (element != null) {
-        value = fromJson(element);
-      }
-
-      result.add(value);
-    }
-
-    return result;
-  }
-
-  Map<K, V> toMap<K extends String, V>(
-      dynamic data, V Function(dynamic) fromJson) {
-    if (data == null) {
-      return null;
-    }
-
-    var result = <K, V>{};
-    for (var key in data.keys) {
-      V value;
-      var element = data[key];
-      if (element != null) {
-        value = fromJson(element);
-      }
-
-      result[key.toString() as K] = value;
-    }
-
-    return result;
-  }
-
-  T toObject<T>(dynamic data, T Function(dynamic) fromJson) {
-    if (data == null) {
-      return null;
-    }
-
-    return fromJson(data);
-  }
+  return data as String;
 }''';
 
-  final String version = '0.1.8';
+  static const String _methodFromList = '''
+List _fromList(dynamic data, dynamic Function(dynamic) toJson) {
+  if (data == null) {
+    return null;
+  }
+  var result = [];
+  for (var element in data) {
+    var value;
+    if (element != null) {
+      value = toJson(element);
+    }
+    result.add(value);
+  }
+  return result;
+}''';
+
+  static const String _methodFromMap = '''
+Map<String, dynamic> _fromMap(dynamic data, dynamic Function(dynamic) toJson) {
+  if (data == null) {
+    return null;
+  }
+  var result = <String, dynamic>{};
+  for (var key in data.keys) {
+    var value;
+    var element = data[key];
+    if (element != null) {
+      value = toJson(element);
+    }
+    result[key.toString()] = value;
+  }
+  return result;
+}''';
+
+  static const String _methodToDateTime = '''
+DateTime _toDateTime(dynamic data) {
+  if (data == null) {
+    return null;
+  }
+  if (data is String) {
+    return DateTime.parse(data);
+  }
+  return data as DateTime;
+}''';
+
+  static const String _methodToDouble = '''
+double _toDouble(dynamic data) {
+  if (data == null) {
+    return null;
+  }
+  if (data is int) {
+    return data.toDouble();
+  }
+  return data as double;
+}''';
+
+  static const String _methodToList = '''
+List<T> _toList<T>(dynamic data, T Function(dynamic) fromJson) {
+  if (data == null) {
+    return null;
+  }
+  var result = <T>[];
+  for (var element in data) {
+    T value;
+    if (element != null) {
+      value = fromJson(element);
+    }
+    result.add(value);
+  }
+  return result;
+}''';
+
+  static const String _methodToMap = '''
+Map<K, V> _toMap<K extends String, V>(
+    dynamic data, V Function(dynamic) fromJson) {
+  if (data == null) {
+    return null;
+  }
+  var result = <K, V>{};
+  for (var key in data.keys) {
+    V value;
+    var element = data[key];
+    if (element != null) {
+      value = fromJson(element);
+    }
+    result[key.toString() as K] = value;
+  }
+  return result;
+}''';
+
+  static const String _methodToObject = '''
+T _toObject<T>(dynamic data, T Function(dynamic) fromJson) {
+  if (data == null) {
+    return null;
+  }
+  return fromJson(data);
+}''';
+
+  Set<String> _usedMethods;
+
+  final String version = '0.1.9';
 
   bool _camelize;
 
   Map<String, _TypeInfo> _classes;
-
-  String _converterVariable;
 
   _TypeInfo _dynamicType;
 
@@ -150,7 +136,7 @@ class _JsonConverter {
     _dynamicType = _createDynmaicType();
     _classes = {};
     _types = {};
-    _converterVariable = '_jc';
+    _usedMethods = Set<String>();
     _primitiveTypes = {};
     _primitiveTypeNames = Set<String>.from([
       'bool',
@@ -281,7 +267,6 @@ class _JsonConverter {
     var classes = _classes.values.toList();
     classes.sort((e1, e2) => e1.fullName.compareTo(e2.fullName));
     var lines = <String>[];
-    lines.add('final $_converterVariable = _JsonConverter();');
     lines.add('');
     for (var class_ in classes) {
       var className = class_.fullName;
@@ -342,7 +327,7 @@ class _JsonConverter {
       lines.add('');
     }
 
-    lines.addAll(LineSplitter().convert(_converterTemplate).toList());
+    lines.addAll(_generateMethods());
     return lines;
   }
 
@@ -421,6 +406,46 @@ class _JsonConverter {
     return ident.replaceAll('\$', '\\\$');
   }
 
+  List<String> _generateMethods() {
+    var result = <String>[];
+    var names = _usedMethods.toList()..sort();
+    String template;
+    for (var name in names) {
+      switch (name) {
+        case 'fromDateTime':
+          template = _methodFromDateTime;
+          break;
+        case 'fromList':
+          template = _methodFromList;
+          break;
+        case 'fromMap':
+          template = _methodFromMap;
+          break;
+        case 'toDateTime':
+          template = _methodToDateTime;
+          break;
+        case 'toDouble':
+          template = _methodToDouble;
+          break;
+        case 'toList':
+          template = _methodToList;
+          break;
+        case 'toMap':
+          template = _methodToMap;
+          break;
+        case 'toObject':
+          template = _methodToObject;
+          break;
+        default:
+          throw StateError('Unknown methos name: $name');
+      }
+
+      result.addAll(LineSplitter().convert(template).toList());
+    }
+
+    return result;
+  }
+
   String _getReader(String source, _TypeInfo type, bool canBeNull) {
     var typeName = type.fullName;
     switch (type.kind) {
@@ -429,7 +454,7 @@ class _JsonConverter {
       case _TypeKind.custom:
         var reader = '$typeName.fromJson(e as Map)';
         if (canBeNull) {
-          return '$_converterVariable.toObject($source, (e) => $reader)';
+          return _methodCall('toObject', [source, reader]);
         }
 
         return reader;
@@ -437,19 +462,19 @@ class _JsonConverter {
       case _TypeKind.list:
         var typeArgs = type.typeArgs;
         var reader = _getReader('e', typeArgs[0], false);
-        return '$_converterVariable.toList($source, (e) => $reader)';
+        return _methodCall('toList', [source, reader]);
       case _TypeKind.map:
         var typeArgs = type.typeArgs;
         var reader = _getReader('e', typeArgs[1], false);
-        return '$_converterVariable.toMap($source, (e) => $reader)';
+        return _methodCall('toMap', [source, reader]);
       case _TypeKind.object:
         return '$source';
       case _TypeKind.primitive:
         switch (typeName) {
           case 'double':
-            return '$_converterVariable.toDouble($source)';
+            return _methodCall('toDouble', [source]);
           case 'DateTime':
-            return '$_converterVariable.toDateTime($source)';
+            return _methodCall('toDateTime', [source]);
         }
 
         return '$source as $typeName';
@@ -473,23 +498,55 @@ class _JsonConverter {
       case _TypeKind.list:
         var typeArgs = type.typeArgs;
         var writer = _getWriter('e', typeArgs[0], false);
-        return '$_converterVariable.fromList($source, (e) => $writer)';
+        return _methodCall('fromList', [source, writer]);
       case _TypeKind.map:
         var typeArgs = type.typeArgs;
         var writer = _getWriter('e', typeArgs[1], false);
-        return '$_converterVariable.fromMap($source, (e) => $writer)';
+        return _methodCall('fromMap', [source, writer]);
       case _TypeKind.object:
         return '$source';
       case _TypeKind.primitive:
         switch (typeName) {
           case 'DateTime':
-            return '$_converterVariable.fromDateTime($source)';
+            return _methodCall('fromDateTime', [source]);
         }
 
         return '$source';
       default:
         throw StateError('Unsupported type: $typeName');
     }
+  }
+
+  String _methodCall(String name, List<String> args) {
+    void checkArgs(int n) {
+      if (args.length != n) {
+        throw StateError('Wrong number of argumnets for method call: $name');
+      }
+    }
+
+    String result;
+    switch (name) {
+      case 'fromDateTime':
+      case 'toDateTime':
+      case 'toDouble':
+        checkArgs(1);
+        result = '(${args[0]})';
+        break;
+      case 'fromList':
+      case 'fromMap':
+      case 'toList':
+      case 'toMap':
+      case 'toObject':
+        checkArgs(2);
+        result = '(${args[0]}, (e) => ${args[1]})';
+        break;
+      default:
+        throw StateError('Unknown method call: $name');
+    }
+
+    _usedMethods.add(name);
+    result = '_' + name + result;
+    return result;
   }
 
   void _parseProps(_TypeInfo type, Map data) {

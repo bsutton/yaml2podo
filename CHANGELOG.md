@@ -1,5 +1,10 @@
 ## 0.1.8
 
+- Minor changes in `Yaml2PodoGenerator` (converter methods have been converted to static methods)
+- Minor improvements in `Yaml2PodoGenerator` (unused converter methods are not generated)
+
+## 0.1.8
+
 - Minor improvements in `Yaml2PodoGenerator` (removed unnecessary checks and wrappers in generated code for save calls)
 
 ## 0.1.7

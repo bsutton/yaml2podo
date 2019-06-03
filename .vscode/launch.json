@@ -13,7 +13,7 @@
             "request": "launch",
             "type": "dart",
             "args": [
-                "example/json_objects.yaml"
+                "test/json_objects.yaml"
             ]
         }
     ]
