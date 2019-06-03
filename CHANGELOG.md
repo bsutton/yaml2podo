@@ -1,3 +1,8 @@
+## 0.1.12
+
+- Added option to `Yaml2PodoGenerator` to store model prototypes as comments within the generated code (default: on)
+- Fixed minor bug in `Yaml2PodoGenerator` (first character of property identifiers has not been converted to lowercase) 
+
 ## 0.1.11
 
 - Restored code formatting of generated code in `bin\yaml2podo.dart`

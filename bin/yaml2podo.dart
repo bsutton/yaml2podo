@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:args/args.dart';
@@ -9,10 +10,16 @@ import 'package:yaml2podo/yaml2podo.dart';
 void main(List<String> args) {
   var argParser = ArgParser();
   argParser.addFlag('camelize',
-      defaultsTo: true, help: 'Allows caramelization of property names');
+      defaultsTo: true,
+      help:
+          'Indicates that property names must be converted to camelCase style');
   argParser.addFlag('immutable',
       defaultsTo: true,
       help: 'Indicates that all properties must be declared as immutable');
+  argParser.addFlag('store',
+      defaultsTo: true,
+      help:
+          'Indicates that the model prototypes should be stored as comments within the generated code');
   argParser.addFlag('help',
       defaultsTo: false, help: 'Displays help information');
   ArgResults argResults;
@@ -41,6 +48,7 @@ void main(List<String> args) {
 
   var camelize = argResults['camelize'] as bool;
   var immutable = argResults['immutable'] as bool;
+  var store = argResults['store'] as bool;
   var inputFileName = argResults.rest[0];
   var inputFile = File(inputFileName);
   var data = inputFile.readAsStringSync();
@@ -57,6 +65,13 @@ void main(List<String> args) {
   lines.add('// https://pub.dev/packages/yaml2podo');
   lines.add('');
   lines.addAll(result);
+  if (store) {
+    lines.add('');
+    lines.add('/*');
+    lines.addAll(LineSplitter().convert(data).toList());
+    lines.add('*/');
+  }
+
   var formatter = new DartFormatter();
   var code = formatter.format(lines.join('\n'));
   //var code = lines.join('\n');

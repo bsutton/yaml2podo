@@ -1,5 +1,5 @@
 name: yaml2podo
-version: 0.1.11
+version: 0.1.12
 author: Andrew Mezoni <andrew.mezoni@gmail.com>
 description: The `yaml2podo` is a generator and utility (all in one) that generates PODO classes to convert between JSON and Dart objects
 homepage: https://github.com/mezoni/yaml2podo

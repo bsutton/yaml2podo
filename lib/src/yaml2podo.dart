@@ -601,6 +601,10 @@ T _toObject<T>(dynamic data, T Function(dynamic) fromJson) {
         name = _utils.camelizeIdentifier(name);
       }
 
+      if (name.isNotEmpty && name[0] == name[0].toUpperCase()) {
+        name = name[0].toLowerCase() + name.substring(1);
+      }
+
       bool isReservedName(String ident) {
         if (_reservedWords.contains(name)) {
           return true;

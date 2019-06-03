@@ -200,3 +200,21 @@ T _toObject<T>(dynamic data, T Function(dynamic) fromJson) {
   }
   return fromJson(data);
 }
+
+/*
+Messages:
+  messages : List<Iterable<String>>
+ObjectWithMap:
+  products: Map<String, Product>
+Order:  
+  date: DateTime
+  items: List<OrderItem>
+  amount: double
+OrderItem:
+  product: Product
+  quantity.qty: int
+  price: double  
+Product:
+  name: String
+  id: int
+*/

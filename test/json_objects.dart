@@ -292,3 +292,38 @@ T _toObject<T>(dynamic data, T Function(dynamic) fromJson) {
   }
   return fromJson(data);
 }
+
+/*
+Alias:
+  clazz.class: String
+Bar:
+  i: int
+Foo:
+  bars: Map<String, Bar>
+Order:
+  amount: double
+  date: DateTime
+  items: List<OrderItem>
+  is_shipped: bool
+OrderItem:
+  product: Product
+  quantity: int
+  price: num
+Product:
+  id: int
+  name: String
+ObjectWithObjects:
+  list: List<Object>
+  map: Map<String, Object>
+Super:
+  boolean: bool
+  date: DateTime 
+  float: double
+  foo: Foo
+  foo2: Foo
+  integer: int
+  string: String
+  list: List<Map<String, Bar>>
+  map: Map<String, List<Bar>>
+  map2: Map<String, List<int>>
+*/

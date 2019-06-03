@@ -2,7 +2,7 @@
 
 The `yaml2podo` is a generator and utility (all in one) that generates PODO classes to convert between JSON and Dart objects
 
-Version 0.1.11
+Version 0.1.12
 
 ### Example of use.
 
@@ -243,6 +243,24 @@ T _toObject<T>(dynamic data, T Function(dynamic) fromJson) {
   return fromJson(data);
 }
 
+/*
+Messages:
+  messages : List<Iterable<String>>
+ObjectWithMap:
+  products: Map<String, Product>
+Order:  
+  date: DateTime
+  items: List<OrderItem>
+  amount: double
+OrderItem:
+  product: Product
+  quantity.qty: int
+  price: double  
+Product:
+  name: String
+  id: int
+*/
+
 ```
 
 And, of course, an example of using code.
@@ -314,7 +332,7 @@ List<Product> _getProducts() {
 Result:
 
 <pre>
-{amount: 32.0, date: 2019-06-03T22:11:43.624167, items: [{qty: 1, price: 10.0, product: {name: Product 0, id: 0}}, {qty: 2, price: 11.0, product: {name: Product 1, id: 1}}]}
+{amount: 32.0, date: 2019-06-04T00:21:55.943074, items: [{qty: 1, price: 10.0, product: {name: Product 0, id: 0}}, {qty: 2, price: 11.0, product: {name: Product 1, id: 1}}]}
 {messages: [[Hello, Goodbye], [Yes, No]]}
 {products: {Product 0: {name: Product 0, id: 0}, Product 1: {name: Product 1, id: 1}}}
 
