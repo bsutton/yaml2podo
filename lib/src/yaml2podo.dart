@@ -123,7 +123,7 @@ class _JsonConverter {
   }
 }''';
 
-  final String version = '0.1.7';
+  final String version = '0.1.8';
 
   bool _camelize;
 
@@ -309,7 +309,7 @@ class _JsonConverter {
           alias = propName;
         }
 
-        var reader = _getReader('map[\'$alias\']', propType);
+        var reader = _getReader('map[\'$alias\']', propType, true);
         lines.add('    result.$propName = $reader;');
       }
 
@@ -330,7 +330,7 @@ class _JsonConverter {
           alias = propName;
         }
 
-        var writer = _getWriter('$propName', propType);
+        var writer = _getWriter('$propName', propType, true);
         lines.add('    result[\'$alias\'] = $writer;');
       }
 
@@ -421,22 +421,26 @@ class _JsonConverter {
     return ident.replaceAll('\$', '\\\$');
   }
 
-  String _getReader(String source, _TypeInfo type) {
+  String _getReader(String source, _TypeInfo type, bool canBeNull) {
     var typeName = type.fullName;
     switch (type.kind) {
       case _TypeKind.bottom:
         return '$source';
       case _TypeKind.custom:
         var reader = '$typeName.fromJson(e as Map)';
-        return '$_converterVariable.toObject($source, (e) => $reader)';
+        if (canBeNull) {
+          return '$_converterVariable.toObject($source, (e) => $reader)';
+        }
+
+        return reader;
       case _TypeKind.iterable:
       case _TypeKind.list:
         var typeArgs = type.typeArgs;
-        var reader = _getReader('e', typeArgs[0]);
+        var reader = _getReader('e', typeArgs[0], false);
         return '$_converterVariable.toList($source, (e) => $reader)';
       case _TypeKind.map:
         var typeArgs = type.typeArgs;
-        var reader = _getReader('e', typeArgs[1]);
+        var reader = _getReader('e', typeArgs[1], false);
         return '$_converterVariable.toMap($source, (e) => $reader)';
       case _TypeKind.object:
         return '$source';
@@ -454,21 +458,25 @@ class _JsonConverter {
     }
   }
 
-  String _getWriter(String source, _TypeInfo type) {
+  String _getWriter(String source, _TypeInfo type, bool canBeNull) {
     var typeName = type.fullName;
     switch (type.kind) {
       case _TypeKind.bottom:
         return '$source';
       case _TypeKind.custom:
-        return '$source?.toJson()';
+        if (canBeNull) {
+          return '$source?.toJson()';
+        }
+
+        return '$source.toJson()';
       case _TypeKind.iterable:
       case _TypeKind.list:
         var typeArgs = type.typeArgs;
-        var writer = _getWriter('e', typeArgs[0]);
+        var writer = _getWriter('e', typeArgs[0], false);
         return '$_converterVariable.fromList($source, (e) => $writer)';
       case _TypeKind.map:
         var typeArgs = type.typeArgs;
-        var writer = _getWriter('e', typeArgs[1]);
+        var writer = _getWriter('e', typeArgs[1], false);
         return '$_converterVariable.fromMap($source, (e) => $writer)';
       case _TypeKind.object:
         return '$source';

@@ -118,6 +118,8 @@ void _testJsonSerializer() {
       order.items.add(item);
     }
 
+    order.items.add(null);
+    order.items.add(OrderItem());
     var jsonOrder = order.toJson();
     var expected = <String, dynamic>{
       'amount': 0,
@@ -132,7 +134,9 @@ void _testJsonSerializer() {
           'product': {'id': 1, 'name': 'Product 1'},
           'price': 1,
           'quantity': 1
-        }
+        },
+        null,
+        {'product': null, 'price': null, 'quantity': null},
       ],
       'is_shipped': true,
     };

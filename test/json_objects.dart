@@ -47,14 +47,13 @@ class Foo {
 
   factory Foo.fromJson(Map map) {
     var result = Foo();
-    result.bars = _jc.toMap(
-        map['bars'], (e) => _jc.toObject(e, (e) => Bar.fromJson(e as Map)));
+    result.bars = _jc.toMap(map['bars'], (e) => Bar.fromJson(e as Map));
     return result;
   }
 
   Map<String, dynamic> toJson() {
     var result = <String, dynamic>{};
-    result['bars'] = _jc.fromMap(bars, (e) => e?.toJson());
+    result['bars'] = _jc.fromMap(bars, (e) => e.toJson());
     return result;
   }
 }
@@ -93,8 +92,8 @@ class Order {
     result.amount = _jc.toDouble(map['amount']);
     result.isShipped = map['is_shipped'] as bool;
     result.date = _jc.toDateTime(map['date']);
-    result.items = _jc.toList(map['items'],
-        (e) => _jc.toObject(e, (e) => OrderItem.fromJson(e as Map)));
+    result.items =
+        _jc.toList(map['items'], (e) => OrderItem.fromJson(e as Map));
     return result;
   }
 
@@ -103,7 +102,7 @@ class Order {
     result['amount'] = amount;
     result['is_shipped'] = isShipped;
     result['date'] = _jc.fromDateTime(date);
-    result['items'] = _jc.fromList(items, (e) => e?.toJson());
+    result['items'] = _jc.fromList(items, (e) => e.toJson());
     return result;
   }
 }
@@ -175,17 +174,13 @@ class Super {
     result.string = map['string'] as String;
     result.foo2 = _jc.toObject(map['foo2'], (e) => Foo.fromJson(e as Map));
     result.map = _jc.toMap(
-        map['map'],
-        (e) => _jc.toList(
-            e, (e) => _jc.toObject(e, (e) => Bar.fromJson(e as Map))));
+        map['map'], (e) => _jc.toList(e, (e) => Bar.fromJson(e as Map)));
     result.boolean = map['boolean'] as bool;
     result.float = _jc.toDouble(map['float']);
     result.integer = map['integer'] as int;
     result.foo = _jc.toObject(map['foo'], (e) => Foo.fromJson(e as Map));
     result.list = _jc.toList(
-        map['list'],
-        (e) => _jc.toMap(
-            e, (e) => _jc.toObject(e, (e) => Bar.fromJson(e as Map))));
+        map['list'], (e) => _jc.toMap(e, (e) => Bar.fromJson(e as Map)));
     return result;
   }
 
@@ -195,14 +190,13 @@ class Super {
     result['date'] = _jc.fromDateTime(date);
     result['string'] = string;
     result['foo2'] = foo2?.toJson();
-    result['map'] =
-        _jc.fromMap(map, (e) => _jc.fromList(e, (e) => e?.toJson()));
+    result['map'] = _jc.fromMap(map, (e) => _jc.fromList(e, (e) => e.toJson()));
     result['boolean'] = boolean;
     result['float'] = float;
     result['integer'] = integer;
     result['foo'] = foo?.toJson();
     result['list'] =
-        _jc.fromList(list, (e) => _jc.fromMap(e, (e) => e?.toJson()));
+        _jc.fromList(list, (e) => _jc.fromMap(e, (e) => e.toJson()));
     return result;
   }
 }

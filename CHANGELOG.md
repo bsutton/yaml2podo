@@ -1,3 +1,7 @@
+## 0.1.8
+
+- Minor improvements in `Yaml2PodoGenerator` (removed unnecessary checks and wrappers in generated code for save calls)
+
 ## 0.1.7
 
 - Fixed bug in `Yaml2PodoGenerator`
