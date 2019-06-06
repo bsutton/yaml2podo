@@ -1,3 +1,8 @@
+## 0.1.14
+
+- Added generator `Resp2YamlGenerator`
+- Added utilty `bin/resp2yaml.dart`
+
 ## 0.1.12
 
 - Added option to `Yaml2PodoGenerator` to store model prototypes as comments within the generated code (default: on)
@@ -5,7 +10,7 @@
 
 ## 0.1.11
 
-- Restored code formatting of generated code in `bin\yaml2podo.dart`
+- Restored code formatting of generated code in `bin/yaml2podo.dart`
 
 ## 0.1.10
 

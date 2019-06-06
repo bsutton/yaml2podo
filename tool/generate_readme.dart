@@ -2,6 +2,11 @@ import 'dart:io';
 import 'package:yaml/yaml.dart' as _yaml;
 
 void main(List<String> args) {
+  var pubspec = _yaml.loadYaml(File('pubspec.yaml').readAsStringSync());
+  var version = pubspec['version'].toString();
+  File('lib/version.dart')
+      .writeAsStringSync('const String version = \'$version\';\n');
+
   var executables = [
     [
       'dart',
@@ -36,10 +41,8 @@ void main(List<String> args) {
     text = text.replaceAll('{{file:$name}}', content);
   }
 
-  var pubspec = _yaml.loadYaml(File('pubspec.yaml').readAsStringSync());
   var description = pubspec['description'].toString();
   text = text.replaceAll('{{description}}', description);
-  var version = pubspec['version'].toString();
   text = text.replaceAll('{{version}}', version);
 
   var result =
