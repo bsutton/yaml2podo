@@ -202,12 +202,17 @@ T _toObject<T>(dynamic data, T Function(dynamic) fromJson) {
 
   List<String> _generateContructor(_TypeInfo type) {
     var result = <String>[];
-    var paramters = <String>[];
+    var parameters = <String>[];
     for (var prop in type.props.values) {
-      paramters.add('this.${prop.name}');
+      parameters.add('this.${prop.name}');
     }
 
-    result.add('  ${type.fullName}({${paramters.join(', ')}});');
+    if (parameters.isEmpty) {
+      result.add('  ${type.fullName}();');
+    } else {
+      result.add('  ${type.fullName}({${parameters.join(', ')}});');
+    }
+
     return result;
   }
 

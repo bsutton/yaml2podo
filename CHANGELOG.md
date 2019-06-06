@@ -1,3 +1,7 @@
+## 0.1.15
+
+- Fixed bug in `Yaml2PodoGenerator` (incorrect constructor code was generated for a class with no properties) 
+
 ## 0.1.14
 
 - Added generator `Resp2YamlGenerator`
