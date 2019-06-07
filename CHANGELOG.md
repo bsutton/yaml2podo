@@ -1,3 +1,7 @@
+## 0.1.16
+
+- Fixed bug in `Resp2YamlGenerator` (incorrect generation of a comments in the file header)
+
 ## 0.1.15
 
 - Fixed bug in `Yaml2PodoGenerator` (incorrect constructor code was generated for a class with no properties) 

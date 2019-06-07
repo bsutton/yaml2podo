@@ -18,6 +18,21 @@ String _fromDateTime(dynamic data) {
   return data as String;
 }''';
 
+  static const String _methodFromEnum = '''
+String _fromEnum<T>(T value) {
+  if (value == null) {
+    return null;
+  }
+
+  var str = '\$value';
+  var offset = str.indexOf('.');
+  if (offset == -1) {
+    throw ArgumentError('The value is not an enum: \$value');
+  }
+
+  return str.substring(offset + 1);
+}''';
+
   static const String _methodFromList = '''
 List _fromList(dynamic data, dynamic Function(dynamic) toJson) {
   if (data == null) {
@@ -71,6 +86,24 @@ double _toDouble(dynamic data) {
     return data.toDouble();
   }
   return data as double;
+}''';
+
+  static const String _methodToEnum = '''
+T _toEnum<T>(String name, Iterable<T> values) {
+  if (name == null) {
+    return null;
+  }
+
+  var offset = '\$T.'.length;
+  for (var value in values) {
+    var key = '\$value'.substring(offset);
+    if (name == key) {
+      return value;
+    }
+  }
+
+  throw ArgumentError(
+      'The getter \'\$name\' isn\'t defined for the class \'\$T\'');
 }''';
 
   static const String _methodToList = '''
@@ -200,46 +233,6 @@ T _toObject<T>(dynamic data, T Function(dynamic) fromJson) {
     }
   }
 
-  List<String> _generateContructor(_TypeInfo type) {
-    var result = <String>[];
-    var parameters = <String>[];
-    for (var prop in type.props.values) {
-      parameters.add('this.${prop.name}');
-    }
-
-    if (parameters.isEmpty) {
-      result.add('  ${type.fullName}();');
-    } else {
-      result.add('  ${type.fullName}({${parameters.join(', ')}});');
-    }
-
-    return result;
-  }
-
-  List<String> _generateFactoryFromJson(_TypeInfo type) {
-    var template = _factoryFromJson;
-    template = template.replaceAll('{{NAME}}', type.fullName);
-    var arguments = <String>[];
-    var props = type.props;
-    for (var prop in props.values) {
-      var propName = prop.name;
-      var propType = prop.type;
-      var alias = prop.alias;
-      if (alias != null) {
-        var escaped = _escapeIdentifier(alias);
-        alias = escaped.replaceAll('\'', '\\\'');
-      } else {
-        alias = propName;
-      }
-
-      var reader = _getReader('map[\'$alias\']', propType, true);
-      arguments.add('      $propName: $reader');
-    }
-
-    template = template.replaceAll('{{ARGUMENTS}}', arguments.join(',\n'));
-    return LineSplitter().convert(template).toList();
-  }
-
   List<String> generate(Map source, {bool camelize = true}) {
     for (var key in source.keys) {
       var name = key.toString();
@@ -257,9 +250,13 @@ T _toObject<T>(dynamic data, T Function(dynamic) fromJson) {
       }
 
       _classes[class_.fullName] = class_;
-      var props = source[key] as Map;
-      if (props != null) {
+      var props = source[key];
+      if (props is Map) {
         _parseProps(class_, props);
+      } else if (props is List) {
+        _parseEnum(class_, props);
+      } else {
+        //
       }
     }
 
@@ -302,6 +299,7 @@ T _toObject<T>(dynamic data, T Function(dynamic) fromJson) {
             walkTypes(propType);
             break;
           case _TypeKind.custom:
+          case _TypeKind.enumerable:
             if (!_classes.containsKey(propType.fullName)) {
               throw StateError('Unknown property type: ${propType}');
             }
@@ -310,7 +308,8 @@ T _toObject<T>(dynamic data, T Function(dynamic) fromJson) {
           case _TypeKind.primitive:
             break;
           default:
-            throw StateError('Unsupported property type: ${propType}');
+            throw StateError(
+                'Unsupported property type kind: ${propType.kind}');
         }
       }
     }
@@ -321,6 +320,16 @@ T _toObject<T>(dynamic data, T Function(dynamic) fromJson) {
     lines.add('');
     for (var class_ in classes) {
       var className = class_.fullName;
+      if (class_.kind == _TypeKind.enumerable) {
+        var values = <String>[];
+        for (var prop in class_.props.values) {
+          values.add(prop.name);
+        }
+
+        lines.add('enum ${className} { ${values.join(', ')} }');
+        continue;
+      }
+
       lines.add('class ${className} {');
       for (var prop in class_.props.values) {
         var propName = prop.name;
@@ -443,6 +452,46 @@ T _toObject<T>(dynamic data, T Function(dynamic) fromJson) {
     return ident.replaceAll('\$', '\\\$');
   }
 
+  List<String> _generateContructor(_TypeInfo type) {
+    var result = <String>[];
+    var parameters = <String>[];
+    for (var prop in type.props.values) {
+      parameters.add('this.${prop.name}');
+    }
+
+    if (parameters.isEmpty) {
+      result.add('  ${type.fullName}();');
+    } else {
+      result.add('  ${type.fullName}({${parameters.join(', ')}});');
+    }
+
+    return result;
+  }
+
+  List<String> _generateFactoryFromJson(_TypeInfo type) {
+    var template = _factoryFromJson;
+    template = template.replaceAll('{{NAME}}', type.fullName);
+    var arguments = <String>[];
+    var props = type.props;
+    for (var prop in props.values) {
+      var propName = prop.name;
+      var propType = prop.type;
+      var alias = prop.alias;
+      if (alias != null) {
+        var escaped = _escapeIdentifier(alias);
+        alias = escaped.replaceAll('\'', '\\\'');
+      } else {
+        alias = propName;
+      }
+
+      var reader = _getReader('map[\'$alias\']', propType, true);
+      arguments.add('      $propName: $reader');
+    }
+
+    template = template.replaceAll('{{ARGUMENTS}}', arguments.join(',\n'));
+    return LineSplitter().convert(template).toList();
+  }
+
   List<String> _generateMethods() {
     var result = <String>[];
     var names = _usedMethods.toList()..sort();
@@ -451,6 +500,9 @@ T _toObject<T>(dynamic data, T Function(dynamic) fromJson) {
       switch (name) {
         case 'fromDateTime':
           template = _methodFromDateTime;
+          break;
+        case 'fromEnum':
+          template = _methodFromEnum;
           break;
         case 'fromList':
           template = _methodFromList;
@@ -463,6 +515,9 @@ T _toObject<T>(dynamic data, T Function(dynamic) fromJson) {
           break;
         case 'toDouble':
           template = _methodToDouble;
+          break;
+        case 'toEnum':
+          template = _methodToEnum;
           break;
         case 'toList':
           template = _methodToList;
@@ -564,6 +619,7 @@ T _toObject<T>(dynamic data, T Function(dynamic) fromJson) {
     String result;
     switch (name) {
       case 'fromDateTime':
+      case 'fromEnum':
       case 'toDateTime':
       case 'toDouble':
         checkArgs(1);
@@ -571,6 +627,7 @@ T _toObject<T>(dynamic data, T Function(dynamic) fromJson) {
         break;
       case 'fromList':
       case 'fromMap':
+      case 'toEnum':
       case 'toList':
       case 'toMap':
       case 'toObject':
@@ -584,6 +641,61 @@ T _toObject<T>(dynamic data, T Function(dynamic) fromJson) {
     _usedMethods.add(name);
     result = '_' + name + result;
     return result;
+  }
+
+  void _parseEnum(_TypeInfo class_, List values) {
+    var className = class_.fullName;
+    void error(String message) {
+      throw StateError(
+          'Invalid \'$className\' enumeration declaration: $message');
+    }
+
+    class_.kind = _TypeKind.enumerable;
+    var names = Set<String>();
+    for (var value in values) {
+      if (value is String) {
+        if (value.isEmpty) {
+          error('Value name must not be empty');
+        }
+
+        if (!_utils.alpha(value.codeUnitAt(0))) {
+          error('Inavlid value name \'$value\'');
+        }
+
+        for (var c in value.codeUnits) {
+          if (!(_utils.alpha(c) || c == 95)) {
+            error('Inavlid value name \'$value\'');
+          }
+        }
+
+        var parts = value.toString().split('.');
+        var alias = parts[0].trim();
+        var name = alias;
+        if (parts.length == 2) {
+          alias = parts[1].trim();
+        } else if (parts.length > 2) {
+          throw StateError(
+              "Invalid \'$className\' enumeration value declaration: ${value}");
+        }
+
+        if (!names.add(name)) {
+          throw StateError(
+              "Duplicate \'$className\' enumeration value: ${value}");
+        }
+
+        if (alias == name) {
+          alias = null;
+        }
+
+        var prop = _PropInfo();
+        prop.alias = alias;
+        prop.name = name;
+        prop.type = class_;
+        class_.props[name] = prop;
+      } else {
+        error('Inavlid value name \'$value\'');
+      }
+    }
   }
 
   void _parseProps(_TypeInfo type, Map data) {
@@ -690,7 +802,16 @@ class _TypeInfo {
   String toString() => '$fullName';
 }
 
-enum _TypeKind { bottom, custom, iterable, list, map, object, primitive }
+enum _TypeKind {
+  bottom,
+  custom,
+  enumerable,
+  iterable,
+  list,
+  map,
+  object,
+  primitive
+}
 
 class _TypeParser {
   String _source;
