@@ -1,6 +1,11 @@
+## 0.1.17
+
+- Added option to `Yaml2PodoGenerator` to format generated code (default: on)
+- Rewritten generator source code `Yaml2PodoGenerator`
+
 ## 0.1.16
 
-- Fixed bug in `Resp2YamlGenerator` (incorrect generation of a comments in the file header)
+Fixed bug in `bin/resp2yaml.dart` (incorrect generation of a comments in the file header)
 
 ## 0.1.15
 

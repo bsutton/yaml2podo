@@ -13,6 +13,7 @@
             "request": "launch",
             "type": "dart",
             "args": [
+                "--format",
                 "test/json_objects.yaml"
             ]
         }

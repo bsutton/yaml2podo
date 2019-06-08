@@ -6,7 +6,7 @@ import 'package:dart_style/dart_style.dart';
 import 'package:path/path.dart' as _path;
 import 'package:yaml/yaml.dart' as _yaml;
 import 'package:yaml2podo/version.dart';
-import 'package:yaml2podo/yaml2podo.dart';
+import 'package:yaml2podo/yaml2podo_generator.dart';
 
 void main(List<String> args) {
   var argParser = ArgParser();
@@ -14,6 +14,9 @@ void main(List<String> args) {
       defaultsTo: true,
       help:
           'Indicates that property names must be converted to camelCase style');
+  argParser.addFlag('format',
+      defaultsTo: true,
+      help: 'Indicates that the source code should be formatted');
   argParser.addFlag('immutable',
       defaultsTo: true,
       help: 'Indicates that all properties must be declared as immutable');
@@ -48,6 +51,7 @@ void main(List<String> args) {
   }
 
   var camelize = argResults['camelize'] as bool;
+  var format = argResults['format'] as bool;
   var immutable = argResults['immutable'] as bool;
   var store = argResults['store'] as bool;
   var inputFileName = argResults.rest[0];
@@ -73,8 +77,11 @@ void main(List<String> args) {
     lines.add('*/');
   }
 
-  var formatter = new DartFormatter();
-  var code = formatter.format(lines.join('\n'));
-  //var code = lines.join('\n');
+  var code = lines.join('\n');
+  if (format) {
+    var formatter = new DartFormatter();
+    code = formatter.format(code);
+  }
+
   outputFile.writeAsStringSync(code);
 }

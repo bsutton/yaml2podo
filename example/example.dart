@@ -5,7 +5,9 @@ void main() {
   var products = _getProducts();
   var items = _creataOrderItems(products);
   var order = Order(
-      amount: _calculateAmount(items), date: DateTime.now(), items: items);
+      amount: _calculateAmount(items),
+      date: DateTime(2019, 05, 31),
+      items: items);
   var jsonOrder = order.toJson();
   print(jsonOrder);
   order = Order.fromJson(jsonOrder);

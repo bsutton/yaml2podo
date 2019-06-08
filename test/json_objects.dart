@@ -43,6 +43,7 @@ class EmptyObject {
 
   Map<String, dynamic> toJson() {
     var result = <String, dynamic>{};
+
     return result;
   }
 }
@@ -64,144 +65,144 @@ class Foo {
 }
 
 class ObjectWithObjects {
-  final Map<String, Object> map;
   final List<Object> list;
+  final Map<String, Object> map;
 
-  ObjectWithObjects({this.map, this.list});
+  ObjectWithObjects({this.list, this.map});
 
   factory ObjectWithObjects.fromJson(Map map) {
     return ObjectWithObjects(
-        map: _toMap(map['map'], (e) => e),
-        list: _toList(map['list'], (e) => e));
+        list: _toList(map['list'], (e) => e),
+        map: _toMap(map['map'], (e) => e));
   }
 
   Map<String, dynamic> toJson() {
     var result = <String, dynamic>{};
-    result['map'] = _fromMap(map, (e) => e);
     result['list'] = _fromList(list, (e) => e);
+    result['map'] = _fromMap(map, (e) => e);
     return result;
   }
 }
 
 class Order {
   final double amount;
-  final bool isShipped;
   final DateTime date;
+  final bool isShipped;
   final List<OrderItem> items;
 
-  Order({this.amount, this.isShipped, this.date, this.items});
+  Order({this.amount, this.date, this.isShipped, this.items});
 
   factory Order.fromJson(Map map) {
     return Order(
         amount: _toDouble(map['amount']),
-        isShipped: map['is_shipped'] as bool,
         date: _toDateTime(map['date']),
+        isShipped: map['is_shipped'] as bool,
         items: _toList(map['items'], (e) => OrderItem.fromJson(e as Map)));
   }
 
   Map<String, dynamic> toJson() {
     var result = <String, dynamic>{};
     result['amount'] = amount;
-    result['is_shipped'] = isShipped;
     result['date'] = _fromDateTime(date);
+    result['is_shipped'] = isShipped;
     result['items'] = _fromList(items, (e) => e.toJson());
     return result;
   }
 }
 
 class OrderItem {
-  final int quantity;
   final num price;
   final Product product;
+  final int quantity;
 
-  OrderItem({this.quantity, this.price, this.product});
+  OrderItem({this.price, this.product, this.quantity});
 
   factory OrderItem.fromJson(Map map) {
     return OrderItem(
-        quantity: map['quantity'] as int,
         price: map['price'] as num,
-        product: _toObject(map['product'], (e) => Product.fromJson(e as Map)));
+        product: _toObject(map['product'], (e) => Product.fromJson(e as Map)),
+        quantity: map['quantity'] as int);
   }
 
   Map<String, dynamic> toJson() {
     var result = <String, dynamic>{};
-    result['quantity'] = quantity;
     result['price'] = price;
     result['product'] = product?.toJson();
+    result['quantity'] = quantity;
     return result;
   }
 }
 
 class Product {
-  final String name;
   final int id;
+  final String name;
 
-  Product({this.name, this.id});
+  Product({this.id, this.name});
 
   factory Product.fromJson(Map map) {
-    return Product(name: map['name'] as String, id: map['id'] as int);
+    return Product(id: map['id'] as int, name: map['name'] as String);
   }
 
   Map<String, dynamic> toJson() {
     var result = <String, dynamic>{};
-    result['name'] = name;
     result['id'] = id;
+    result['name'] = name;
     return result;
   }
 }
 
 class Super {
-  final Map<String, List<int>> map2;
-  final DateTime date;
-  final String string;
-  final Foo foo2;
-  final Map<String, List<Bar>> map;
   final bool boolean;
+  final DateTime date;
   final double float;
-  final int integer;
   final Foo foo;
+  final Foo foo2;
+  final int integer;
   final List<Map<String, Bar>> list;
+  final Map<String, List<Bar>> map;
+  final Map<String, List<int>> map2;
+  final String string;
 
   Super(
-      {this.map2,
+      {this.boolean,
       this.date,
-      this.string,
-      this.foo2,
-      this.map,
-      this.boolean,
       this.float,
-      this.integer,
       this.foo,
-      this.list});
+      this.foo2,
+      this.integer,
+      this.list,
+      this.map,
+      this.map2,
+      this.string});
 
   factory Super.fromJson(Map map) {
     return Super(
-        map2: _toMap(map['map2'], (e) => _toList(e, (e) => e as int)),
+        boolean: map['boolean'] as bool,
         date: _toDateTime(map['date']),
-        string: map['string'] as String,
+        float: _toDouble(map['float']),
+        foo: _toObject(map['foo'], (e) => Foo.fromJson(e as Map)),
         foo2: _toObject(map['foo2'], (e) => Foo.fromJson(e as Map)),
+        integer: map['integer'] as int,
+        list: _toList(
+            map['list'], (e) => _toMap(e, (e) => Bar.fromJson(e as Map))),
         map: _toMap(
             map['map'], (e) => _toList(e, (e) => Bar.fromJson(e as Map))),
-        boolean: map['boolean'] as bool,
-        float: _toDouble(map['float']),
-        integer: map['integer'] as int,
-        foo: _toObject(map['foo'], (e) => Foo.fromJson(e as Map)),
-        list: _toList(
-            map['list'], (e) => _toMap(e, (e) => Bar.fromJson(e as Map))));
+        map2: _toMap(map['map2'], (e) => _toList(e, (e) => e as int)),
+        string: map['string'] as String);
   }
 
   Map<String, dynamic> toJson() {
     var result = <String, dynamic>{};
-    result['map2'] = _fromMap(map2, (e) => _fromList(e, (e) => e));
-    result['date'] = _fromDateTime(date);
-    result['string'] = string;
-    result['foo2'] = foo2?.toJson();
-    result['map'] = _fromMap(map, (e) => _fromList(e, (e) => e.toJson()));
     result['boolean'] = boolean;
+    result['date'] = _fromDateTime(date);
     result['float'] = float;
-    result['integer'] = integer;
     result['foo'] = foo?.toJson();
+    result['foo2'] = foo2?.toJson();
+    result['integer'] = integer;
     result['list'] = _fromList(list, (e) => _fromMap(e, (e) => e.toJson()));
+    result['map'] = _fromMap(map, (e) => _fromList(e, (e) => e.toJson()));
+    result['map2'] = _fromMap(map2, (e) => _fromList(e, (e) => e));
+    result['string'] = string;
     return result;
   }
 }
