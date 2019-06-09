@@ -175,9 +175,9 @@ void _testJsonSerializer() {
 
     value.list.add({});
 
-    value.map['0'] = [];
-    value.map['0'].add(Bar(i: 123));
-    value.map['1'] = null;
+    value.map[0] = [];
+    value.map[0].add(Bar(i: 123));
+    value.map[1] = null;
     value.list[0]["bar"] = Bar(i: 99);
     var jsonValue = value.toJson();
     var expected = {
@@ -188,10 +188,10 @@ void _testJsonSerializer() {
       'boolean': true,
       'map2': null,
       "map": {
-        '0': [
+        0: [
           {'i': 123}
         ],
-        '1': null
+        1: null
       },
       'float': 1.0,
       'integer': 2,
@@ -208,37 +208,37 @@ void _testJsonSerializer() {
 
 void _transform(dynamic object) {
   var type = object.runtimeType as Type;
-  var jsonOject = object.toJson();
+  var jsonOject = object.toJson() as Map<String, dynamic>;
   var object2 = _unmarshal(jsonOject, type: type);
   var jsonOject2 = object2.toJson();
   expect(jsonOject, jsonOject2);
 }
 
-T _unmarshal<T>(dynamic value, {Type type}) {
+T _unmarshal<T>(Map<String, dynamic> value, {Type type}) {
   if (type == null) {
     type = T;
     if (type == dynamic) {
-      type = value.runtimeType as Type;
+      type = value as Type;
     }
   }
 
   switch (type) {
     case Alias:
-      return Alias.fromJson(value as Map) as T;
+      return Alias.fromJson(value) as T;
     case Bar:
-      return Bar.fromJson(value as Map) as T;
+      return Bar.fromJson(value) as T;
     case Foo:
-      return Foo.fromJson(value as Map) as T;
+      return Foo.fromJson(value) as T;
     case ObjectWithObjects:
-      return ObjectWithObjects.fromJson(value as Map) as T;
+      return ObjectWithObjects.fromJson(value) as T;
     case Order:
-      return Order.fromJson(value as Map) as T;
+      return Order.fromJson(value) as T;
     case OrderItem:
-      return OrderItem.fromJson(value as Map) as T;
+      return OrderItem.fromJson(value) as T;
     case Product:
-      return Product.fromJson(value as Map) as T;
+      return Product.fromJson(value) as T;
     case Super:
-      return Super.fromJson(value as Map) as T;
+      return Super.fromJson(value) as T;
     default:
       throw StateError('Unable to marshal value of type \'$type\'');
   }

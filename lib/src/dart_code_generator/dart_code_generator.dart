@@ -43,6 +43,12 @@ class DartCodeGenerator {
       case 'toObject':
         template = _methodToObject;
         break;
+      case 'toObjectList':
+        template = _methodToObjectList;
+        break;
+      case 'toObjectMap':
+        template = _methodToObjectMap;
+        break;
       default:
         throw StateError('Unknown method name: $name');
     }
@@ -71,7 +77,7 @@ class {{NAME}} {
     result = result.replaceAll('{{CTOR}}', lines.join('\n'));
     lines = _generateProperties(type);
     result = result.replaceAll('{{FIELDS}}', lines.join('\n'));
-    lines = _generateFactory(type);
+    lines = _generateFactoryFromJson(type);
     result = result.replaceAll('{{FACTORY}}', lines.join('\n'));
     lines = _generateMethodToJson(type);
     result = result.replaceAll('{{TO_JSON}}', lines.join('\n'));
@@ -118,9 +124,9 @@ class {{NAME}} {
     return result;
   }
 
-  List<String> _generateFactory(TypeDeclaration type) {
+  List<String> _generateFactoryFromJson(TypeDeclaration type) {
     const template = '''
-  factory {{NAME}}.fromJson(Map map) {
+  factory {{NAME}}.fromJson(Map<String, dynamic> json) {
     return {{NAME}} (
 {{ARGUMENTS}});
   }''';
@@ -140,16 +146,17 @@ class {{NAME}} {
         alias = name;
       }
 
-      var reader = _getReader('map[\'$alias\']', property.type, true);
+      var reader = _getReader('json[\'$alias\']', property.type, true);
       var sb = StringBuffer();
       sb.write('      ');
       sb.write(name);
       sb.write(': ');
       sb.write(reader);
+      sb.write(',');
       arguments.add(sb.toString());
     }
 
-    result = result.replaceAll('{{ARGUMENTS}}', arguments.join(',\n'));
+    result = result.replaceAll('{{ARGUMENTS}}', arguments.join('\n'));
     return LineSplitter().convert(result).toList();
   }
 
@@ -294,11 +301,21 @@ class {{NAME}} {
           case 'Iterable':
           case 'List':
             var arguments = type.arguments;
-            var reader = _getReader('e', arguments[0], false);
+            var elementType = arguments[0];
+            var reader = _getReader('e', elementType, false);
+            if (_isCustomObjectType(elementType)) {
+              return _methodCall('toObjectList', [name, reader]);
+            }
+
             return _methodCall('toList', [name, reader]);
           case 'Map':
             var arguments = type.arguments;
-            var reader = _getReader('e', arguments[1], false);
+            var valueType = arguments[1];
+            var reader = _getReader('e', valueType, false);
+            if (_isCustomObjectType(valueType)) {
+              return _methodCall('toObjectMap', [name, reader]);
+            }
+
             return _methodCall('toMap', [name, reader]);
           default:
             if (type.arguments.isNotEmpty) {
@@ -307,7 +324,7 @@ class {{NAME}} {
 
             var sb = StringBuffer();
             sb.write(type.name);
-            sb.write('.fromJson(e as Map)');
+            sb.write('.fromJson(e)');
             var reader = sb.toString();
             if (canBeNull) {
               return _methodCall('toObject', [name, reader]);
@@ -389,6 +406,29 @@ class {{NAME}} {
     }
   }
 
+  bool _isCollectionType(TypeDeclaration type) {
+    if (type.isCustomType) {
+      switch (type.name) {
+        case 'Iterable':
+        case 'List':
+        case 'Map':
+          return true;
+      }
+    }
+
+    return false;
+  }
+
+  bool _isCustomObjectType(TypeDeclaration type) {
+    if (type.isCustomType) {
+      if (!_isCollectionType(type)) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
   String _methodCall(String name, List<String> args) {
     void checkArgs(int n) {
       if (args.length != n) {
@@ -411,6 +451,8 @@ class {{NAME}} {
       case 'toList':
       case 'toMap':
       case 'toObject':
+      case 'toObjectList':
+      case 'toObjectMap':
         checkArgs(2);
         result = '(${args[0]}, (e) => ${args[1]})';
         break;

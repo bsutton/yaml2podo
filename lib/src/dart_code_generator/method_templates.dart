@@ -1,7 +1,7 @@
 part of '../../dart_code_generator.dart';
 
 const String _methodFromDateTime = '''
-String _fromDateTime(dynamic data) {
+String _fromDateTime(data) {
   if (data == null) {
     return null;
   }
@@ -27,7 +27,7 @@ String _fromEnum<T>(T value) {
 }''';
 
 const String _methodFromList = '''
-List _fromList(dynamic data, dynamic Function(dynamic) toJson) {
+List _fromList(data, Function(dynamic) toJson) {
   if (data == null) {
     return null;
   }
@@ -43,24 +43,24 @@ List _fromList(dynamic data, dynamic Function(dynamic) toJson) {
 }''';
 
 const String _methodFromMap = '''
-Map<String, dynamic> _fromMap(dynamic data, dynamic Function(dynamic) toJson) {
+Map<K, V> _fromMap<K, V>(data, V Function(dynamic) toJson) {
   if (data == null) {
     return null;
   }
-  var result = <String, dynamic>{};
+  var result = <K, V>{};
   for (var key in data.keys) {
-    var value;
+    V value;
     var element = data[key];
     if (element != null) {
       value = toJson(element);
     }
-    result[key.toString()] = value;
+    result[key as K] = value;
   }
   return result;
 }''';
 
 const String _methodToDateTime = '''
-DateTime _toDateTime(dynamic data) {
+DateTime _toDateTime(data) {
   if (data == null) {
     return null;
   }
@@ -71,7 +71,7 @@ DateTime _toDateTime(dynamic data) {
 }''';
 
 const String _methodToDouble = '''
-double _toDouble(dynamic data) {
+double _toDouble(data) {
   if (data == null) {
     return null;
   }
@@ -100,7 +100,7 @@ T _toEnum<T>(String name, Iterable<T> values) {
 }''';
 
 const String _methodToList = '''
-List<T> _toList<T>(dynamic data, T Function(dynamic) fromJson) {
+List<T> _toList<T>(data, T Function(dynamic) fromJson) {
   if (data == null) {
     return null;
   }
@@ -116,8 +116,7 @@ List<T> _toList<T>(dynamic data, T Function(dynamic) fromJson) {
 }''';
 
 const String _methodToMap = '''
-Map<K, V> _toMap<K extends String, V>(
-    dynamic data, V Function(dynamic) fromJson) {
+Map<K, V> _toMap<K, V>(data, V Function(dynamic) fromJson) {
   if (data == null) {
     return null;
   }
@@ -128,15 +127,48 @@ Map<K, V> _toMap<K extends String, V>(
     if (element != null) {
       value = fromJson(element);
     }
-    result[key.toString() as K] = value;
+    result[key as K] = value;
   }
   return result;
 }''';
 
 const String _methodToObject = '''
-T _toObject<T>(dynamic data, T Function(dynamic) fromJson) {
+T _toObject<T>(data, T Function(Map<String, dynamic>) fromJson) {
   if (data == null) {
     return null;
   }
-  return fromJson(data);
+  return fromJson(data as Map<String, dynamic>);
+}''';
+
+const String _methodToObjectList = '''
+List<T> _toObjectList<T>(data, T Function(Map<String, dynamic>) fromJson) {
+  if (data == null) {
+    return null;
+  }
+  var result = <T>[];
+  for (var element in data) {
+    T value;
+    if (element != null) {
+      value = fromJson(element as Map<String, dynamic>);
+    }
+    result.add(value);
+  }
+  return result;
+}''';
+
+const String _methodToObjectMap = '''
+Map<K, V> _toObjectMap<K, V>(data, V Function(Map<String, dynamic>) fromJson) {
+  if (data == null) {
+    return null;
+  }
+  var result = <K, V>{};
+  for (var key in data.keys) {
+    V value;
+    var element = data[key];
+    if (element != null) {
+      value = fromJson(element as Map<String, dynamic>);
+    }
+    result[key as K] = value;
+  }
+  return result;
 }''';

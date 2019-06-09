@@ -1,3 +1,7 @@
+## 0.1.19
+
+- Minor improvements in `Yaml2PodoGenerator` (improved quality of generated code)
+
 ## 0.1.18
 
 - The source code of the method template `toJson` has been simplified.
