@@ -150,23 +150,3 @@ class Resp2YamlGenerator {
     return result;
   }
 }
-
-class _TypeInfo {
-  _TypeRef typeRef;
-}
-
-class _TypeRef {
-  Map<String, dynamic> props = {};
-
-  String id;
-
-  void addProp(String name) {
-    if (props.containsKey(name)) {
-      throw StateError('Property already exist: $name');
-    }
-
-    var names = props.values.toList();
-    names.sort();
-    id = names.join('#');
-  }
-}

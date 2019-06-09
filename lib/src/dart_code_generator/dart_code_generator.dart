@@ -237,43 +237,6 @@ class {{NAME}} {
     return LineSplitter().convert(result).toList();
   }
 
-  List<String> _generateMethodToJson_(TypeDeclaration type) {
-    const template = '''
-  Map<String, dynamic> toJson() {
-    var result = <String, dynamic>{};
-{{STATEMENTS}}
-    return result;
-  }''';
-
-    var result = template;
-    var properties = type.properties;
-    var names = properties.values.map((e) => e.name);
-    var statements = <String>[];
-    for (var name in names) {
-      var property = properties[name];
-      var alias = property.alias;
-      if (alias != null) {
-        alias = alias.replaceAll('\$', '\\\$');
-        alias = alias.replaceAll('\'', '\\\'');
-      } else {
-        alias = name;
-      }
-
-      var writer = _getWriter(name, property.type, true);
-      var sb = StringBuffer();
-      sb.write('    ');
-      sb.write('result[\'');
-      sb.write(alias);
-      sb.write('\'] = ');
-      sb.write(writer);
-      sb.write(';');
-      statements.add(sb.toString());
-    }
-
-    result = result.replaceAll('{{STATEMENTS}}', statements.join('\n'));
-    return LineSplitter().convert(result).toList();
-  }
-
   List<String> _generateProperties(TypeDeclaration type) {
     var result = <String>[];
     var names = type.properties.values.map((e) => e.name);
