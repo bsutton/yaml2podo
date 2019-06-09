@@ -1,3 +1,8 @@
+## 0.1.18
+
+- The source code of the method template `toJson` has been simplified.
+- The source code of `example/example.dart` has been simplified.
+
 ## 0.1.17
 
 - Added option to `Yaml2PodoGenerator` to format generated code (default: on)

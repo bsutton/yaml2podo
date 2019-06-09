@@ -1,7 +1,3 @@
-Messages:
-  messages : List<Iterable<String>>
-ObjectWithMap:
-  products: Map<String, Product>
 Order:  
   date: DateTime
   items: List<OrderItem>

@@ -1,31 +1,17 @@
 import 'json_objects.dart';
 
 void main() {
-  // Order
   var products = _getProducts();
   var items = _creataOrderItems(products);
   var order = Order(
       amount: _calculateAmount(items),
       date: DateTime(2019, 05, 31),
       items: items);
-  var jsonOrder = order.toJson();
-  print(jsonOrder);
-  order = Order.fromJson(jsonOrder);
-  // Messages
-  var messages = Messages(messages: []);
-  messages.messages.add(['Hello', 'Goodbye']);
-  messages.messages.add(['Yes', 'No']);
-  var jsonMessages = messages.toJson();
-  print(jsonMessages);
-  // ObjectWithMap
-  var objectWithMap = ObjectWithMap(products: {});
-  for (var product in products) {
-    objectWithMap.products[product.name] = product;
-  }
-
-  var jsonObjectWithMap = objectWithMap.toJson();
-  print(jsonObjectWithMap);
-  objectWithMap = ObjectWithMap.fromJson(jsonObjectWithMap);
+  var object = order.toJson();
+  print(object);
+  order = Order.fromJson(object);
+  object = order.toJson();
+  print(object);
 }
 
 List<OrderItem> _creataOrderItems(List<Product> products) {
