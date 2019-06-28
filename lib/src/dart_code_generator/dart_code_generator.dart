@@ -127,7 +127,7 @@ class {{NAME}} {
   List<String> _generateFactoryFromJson(TypeDeclaration type) {
     const template = '''
   factory {{NAME}}.fromJson(Map<String, dynamic> json) {
-    return {{NAME}} (
+    return {{NAME}}(
 {{ARGUMENTS}});
   }''';
 
@@ -244,7 +244,11 @@ class {{NAME}} {
     for (var name in names) {
       var property = properties[name];
       var sb = StringBuffer();
-      sb.write('  final ');
+      sb.write('  ');
+      if (property.isFinal) {
+        sb.write('final ');
+      }
+
       sb.write(property.type.toString());
       sb.write(' ');
       sb.write(property.name);

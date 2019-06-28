@@ -1,3 +1,7 @@
+## 0.1.20
+
+- Fixed bug in `DartCodeGenerator` (properties were declared as 'final' regardless of the `isFinal` flag) 
+
 ## 0.1.19
 
 - Minor improvements in `Yaml2PodoGenerator` (improved quality of generated code)
