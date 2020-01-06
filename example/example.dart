@@ -1,4 +1,4 @@
-import 'json_objects.dart';
+import 'json_objects.yaml2podo.dart';
 
 void main() {
   var products = _getProducts();

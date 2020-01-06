@@ -1,7 +1,7 @@
 import 'package:test/test.dart';
 
 import 'package:yaml2podo/_utils.dart' as _utils;
-import 'json_objects.dart';
+import 'json_objects.yaml2podo.dart';
 
 void main() {
   _testBinUtils();
@@ -178,7 +178,7 @@ void _testJsonSerializer() {
     value.map[0] = [];
     value.map[0].add(Bar(i: 123));
     value.map[1] = null;
-    value.list[0]["bar"] = Bar(i: 99);
+    value.list[0]['bar'] = Bar(i: 99);
     var jsonValue = value.toJson();
     var expected = {
       'foo': null,
@@ -187,7 +187,7 @@ void _testJsonSerializer() {
       'string': 'hello',
       'boolean': true,
       'map2': null,
-      "map": {
+      'map': {
         0: [
           {'i': 123}
         ],

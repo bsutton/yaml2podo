@@ -2,13 +2,13 @@
 
 The `yaml2podo` is a generator and utility (all in one) that generates PODO classes to convert between JSON and Dart objects
 
-Version 0.1.20
+Version 0.1.21
 
 ### Example of use.
 
 Declarations (simple enough and informative).
 
-[example/json_objects.yaml](https://github.com/mezoni/yaml2podo/blob/master/example/json_objects.yaml)
+[example/json_objects.yaml2podo.yaml](https://github.com/mezoni/yaml2podo/blob/master/example/json_objects.yaml2podo.yaml)
 
 ```yaml
 Order:  
@@ -23,6 +23,43 @@ Product:
   name: String
   id: int
 ```
+There are 3 ways to generate the source code.
+1. Generating (building) using command `pub run build_runner build`
+2. Generating using command `pub global run yaml2podo path/to/json_objects.yaml2podo.yaml`
+3. Generating using class `Yaml2PodoGenerator`
+
+#### Building (beta version feature).
+
+Example of file `build.yaml`
+
+```yaml
+builders:
+  resolvingBuilder:
+    import: "package:yaml2podo/yaml2podo_builder.dart"
+    builder_factories: ["yaml2podoBuilder"]
+    build_extensions: {".yaml2podo.yaml": [".yaml2podo.dart"]}
+    build_to: source
+    auto_apply: root_package
+    defaults:
+      generate_for:
+        include:
+        - lib/**
+```
+
+Example of file `pubspec.yaml`
+
+```yaml
+dev_dependencies:
+  build_runner: '>=1.6.2 <2.0.0'  
+```
+
+Run build process.
+
+<pre>
+pub run build_runner build
+</pre>
+
+#### Generating using command lone tool.
 
 Run utility.
 

@@ -1,7 +1,7 @@
 part of '../../dart_code_generator.dart';
 
 class DartCodeGenerator {
-  Map<String, List<String> Function()> _methodGenarators = {};
+  final Map<String, List<String> Function()> _methodGenarators = {};
 
   List<String> generate(Iterable<TypeDeclaration> types) {
     var result = <String>[];
@@ -54,7 +54,7 @@ class DartCodeGenerator {
     }
 
     if (!_methodGenarators.containsKey(name)) {
-      generator() => LineSplitter().convert(template).toList();
+      List<String> generator() => LineSplitter().convert(template).toList();
       _methodGenarators[name] = generator;
     }
   }

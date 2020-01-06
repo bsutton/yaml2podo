@@ -3,7 +3,7 @@ part of '../resp2yaml.dart';
 class Resp2YamlGenerator {
   static const String _unknownTypeName = 'Object';
 
-  Map<String, Map<String, Set<String>>> _classes = {};
+  final Map<String, Map<String, Set<String>>> _classes = {};
 
   List<String> generate(dynamic jsonObject, List<String> path) {
     _analyze(jsonObject, path);
@@ -66,7 +66,7 @@ class Resp2YamlGenerator {
       return 'List<${_unknownTypeName}>';
     }
 
-    var typeUnion = Set<String>();
+    var typeUnion = <String>{};
     for (var element in list) {
       var typeName = _analyze(element, path);
       typeUnion.add(typeName);
@@ -90,7 +90,7 @@ class Resp2YamlGenerator {
       var typeName = _analyze(value, newPath);
       var typeUnion = class_[newkey];
       if (typeUnion == null) {
-        typeUnion = Set<String>();
+        typeUnion = <String>{};
         class_[newkey] = typeUnion;
       }
 

@@ -1,3 +1,7 @@
+## 0.1.21
+
+- Added support of building using `build_runner`
+
 ## 0.1.20
 
 - Fixed bug in `DartCodeGenerator` (properties were declared as 'final' regardless of the `isFinal` flag) 

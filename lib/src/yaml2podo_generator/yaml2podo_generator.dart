@@ -43,42 +43,42 @@ class Yaml2PodoGenerator {
       'String',
     ];
 
-    _reservedWords = Set<String>.from([
-      "assert",
-      "break",
-      "case",
-      "catch",
-      "class",
-      "const",
-      "continue",
-      "default",
-      "do",
-      "else",
-      "enum",
-      "extends",
-      "false",
-      "final",
-      "finally",
-      "for",
-      "if",
-      "in",
-      "is",
-      "late",
-      "new",
-      "null",
-      "rethrow",
-      "return",
-      "super",
-      "switch",
-      "this",
-      "throw",
-      "true",
-      "try",
-      "var",
-      "void",
-      "while",
-      "with",
-    ]);
+    _reservedWords = <String>{
+      'assert',
+      'break',
+      'case',
+      'catch',
+      'class',
+      'const',
+      'continue',
+      'default',
+      'do',
+      'else',
+      'enum',
+      'extends',
+      'false',
+      'final',
+      'finally',
+      'for',
+      'if',
+      'in',
+      'is',
+      'late',
+      'new',
+      'null',
+      'rethrow',
+      'return',
+      'super',
+      'switch',
+      'this',
+      'throw',
+      'true',
+      'try',
+      'var',
+      'void',
+      'while',
+      'with',
+    };
 
     for (var name in builtinTypeNames) {
       var type = _createBuiltinType(name);
@@ -268,7 +268,7 @@ class Yaml2PodoGenerator {
     }
 
     type.isEnumType = true;
-    var names = Set<String>();
+    var names = <String>{};
     for (var value in values) {
       _addStage('Parsing enum value \'$value\'');
       if (value is String) {
@@ -296,7 +296,7 @@ class Yaml2PodoGenerator {
         }
 
         if (!names.add(name)) {
-          _error("Duplicate value");
+          _error('Duplicate value');
         }
 
         if (alias == name) {
@@ -315,7 +315,7 @@ class Yaml2PodoGenerator {
   }
 
   void _parseProperties(TypeDeclaration type, Map data) {
-    var names = Set<String>();
+    var names = <String>{};
     var properties = <String, PropertyDeclaration>{};
     for (var key in data.keys) {
       _addStage('Parsing property \'$key\'');
@@ -325,7 +325,7 @@ class Yaml2PodoGenerator {
       if (parts.length == 2) {
         alias = parts[1].trim();
       } else if (parts.length > 2) {
-        _error("Invalid property identifier declaration");
+        _error('Invalid property identifier declaration');
       }
 
       name = _utils.convertToIdentifier(name, '\$');

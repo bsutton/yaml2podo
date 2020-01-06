@@ -79,7 +79,7 @@ void main(List<String> args) {
 
   var code = lines.join('\n');
   if (format) {
-    var formatter = new DartFormatter();
+    var formatter = DartFormatter();
     code = formatter.format(code);
   }
 
