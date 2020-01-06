@@ -34,7 +34,7 @@ Example of file `build.yaml`
 
 ```yaml
 builders:
-  resolvingBuilder:
+  yaml2podoBuilder:
     import: "package:yaml2podo/yaml2podo_builder.dart"
     builder_factories: ["yaml2podoBuilder"]
     build_extensions: {".yaml2podo.yaml": [".yaml2podo.dart"]}
@@ -49,6 +49,8 @@ builders:
 Example of file `pubspec.yaml`
 
 ```yaml
+dependencies:
+  yaml2podo: ^0.1.21
 dev_dependencies:
   build_runner: '>=1.6.2 <2.0.0'  
 ```
