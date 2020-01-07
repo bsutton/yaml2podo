@@ -57,7 +57,11 @@ void main(List<String> args) {
   var inputFileName = argResults.rest[0];
   var inputFile = File(inputFileName);
   var data = inputFile.readAsStringSync();
-  var source = _yaml.loadYaml(data);
+  var source = _yaml.loadYaml(data) ?? <String, dynamic>{};
+  if (source is! Map) {
+    throw FormatException('Invalid source format');
+  }
+
   var generator = Yaml2PodoGenerator(camelize: camelize, immutable: immutable);
   var result = generator.generate(source as Map);
   var dirName = _path.dirname(inputFileName);

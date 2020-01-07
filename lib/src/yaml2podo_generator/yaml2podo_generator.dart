@@ -90,6 +90,10 @@ class Yaml2PodoGenerator {
   }
 
   List<String> generate(Map source, {bool camelize = true}) {
+    if (source == null) {
+      throw ArgumentError.notNull('source');
+    }
+
     _stages.clear();
     for (var key in source.keys) {
       var name = key.toString();

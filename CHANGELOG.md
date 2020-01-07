@@ -1,3 +1,7 @@
+## 0.1.22
+
+- Minor impovements and bug fixes related with incorrect input formats or with an empty input files
+
 ## 0.1.21
 
 - Added support of building using `build_runner`

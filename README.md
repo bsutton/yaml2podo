@@ -2,7 +2,7 @@
 
 The `yaml2podo` is a generator and utility (all in one) that generates PODO classes to convert between JSON and Dart objects
 
-Version 0.1.21
+Version 0.1.22
 
 ### Example of use.
 
