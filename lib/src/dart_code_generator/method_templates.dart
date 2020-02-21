@@ -133,15 +133,15 @@ Map<K, V> _toMap<K, V>(data, V Function(dynamic) fromJson) {
 }''';
 
 const String _methodToObject = '''
-T _toObject<T>(data, T Function(Map<String, dynamic>) fromJson) {
+T _toObject<T>(data, T Function(Map) fromJson) {
   if (data == null) {
     return null;
   }
-  return fromJson(data as Map<String, dynamic>);
+  return fromJson(data as Map);
 }''';
 
 const String _methodToObjectList = '''
-List<T> _toObjectList<T>(data, T Function(Map<String, dynamic>) fromJson) {
+List<T> _toObjectList<T>(data, T Function(Map) fromJson) {
   if (data == null) {
     return null;
   }
@@ -149,7 +149,7 @@ List<T> _toObjectList<T>(data, T Function(Map<String, dynamic>) fromJson) {
   for (var element in data) {
     T value;
     if (element != null) {
-      value = fromJson(element as Map<String, dynamic>);
+      value = fromJson(element as Map);
     }
     result.add(value);
   }
@@ -157,7 +157,7 @@ List<T> _toObjectList<T>(data, T Function(Map<String, dynamic>) fromJson) {
 }''';
 
 const String _methodToObjectMap = '''
-Map<K, V> _toObjectMap<K, V>(data, V Function(Map<String, dynamic>) fromJson) {
+Map<K, V> _toObjectMap<K, V>(data, V Function(Map) fromJson) {
   if (data == null) {
     return null;
   }
@@ -166,7 +166,7 @@ Map<K, V> _toObjectMap<K, V>(data, V Function(Map<String, dynamic>) fromJson) {
     V value;
     var element = data[key];
     if (element != null) {
-      value = fromJson(element as Map<String, dynamic>);
+      value = fromJson(element as Map);
     }
     result[key as K] = value;
   }

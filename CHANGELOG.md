@@ -1,3 +1,7 @@
+## 0.1.24
+
+- The definitions of `fromJson` variables in function parameters have been changed from `Function (Map <String, dynamic>)` to `Function (Map)`.
+
 ## 0.1.23
 
 - The definition of the `fromJson` factory has been changed from `fromJson(Map<String, dynamic> json)` to `fromJson(Map json)`. Thanks to sameerjj (Sameer Jiwani), https://github.com/sameerjj
