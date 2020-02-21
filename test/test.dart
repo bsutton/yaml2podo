@@ -208,13 +208,13 @@ void _testJsonSerializer() {
 
 void _transform(dynamic object) {
   var type = object.runtimeType as Type;
-  var jsonOject = object.toJson() as Map<String, dynamic>;
+  var jsonOject = object.toJson() as Map;
   var object2 = _unmarshal(jsonOject, type: type);
   var jsonOject2 = object2.toJson();
   expect(jsonOject, jsonOject2);
 }
 
-T _unmarshal<T>(Map<String, dynamic> value, {Type type}) {
+T _unmarshal<T>(Map value, {Type type}) {
   if (type == null) {
     type = T;
     if (type == dynamic) {

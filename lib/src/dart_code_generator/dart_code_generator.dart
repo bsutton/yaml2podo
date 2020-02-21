@@ -126,7 +126,7 @@ class {{NAME}} {
 
   List<String> _generateFactoryFromJson(TypeDeclaration type) {
     const template = '''
-  factory {{NAME}}.fromJson(Map<String, dynamic> json) {
+  factory {{NAME}}.fromJson(Map json) {
     return {{NAME}}(
 {{ARGUMENTS}});
   }''';

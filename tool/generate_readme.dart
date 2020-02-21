@@ -10,7 +10,7 @@ void main(List<String> args) {
   var executables = [
     [
       'dart',
-      ['bin/yaml2podo.dart', 'example/json_objects.yaml']
+      ['bin/yaml2podo.dart', 'example/json_objects.yaml2podo.yaml']
     ],
     [
       'dartfmt',
@@ -31,8 +31,8 @@ void main(List<String> args) {
 
   var files = [
     'example/example.dart',
-    'example/json_objects.yaml',
-    'example/json_objects.dart'
+    'example/json_objects.yaml2podo.yaml',
+    'example/json_objects.yaml2podo.dart'
   ];
 
   var text = _template;

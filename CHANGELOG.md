@@ -1,3 +1,7 @@
+## 0.1.23
+
+- The definition of the `fromJson` factory has been changed from `fromJson(Map<String, dynamic> json)` to `fromJson(Map json)`. Thanks to sameerjj (Sameer Jiwani), https://github.com/sameerjj
+
 ## 0.1.22
 
 - Minor impovements and bug fixes related with incorrect input formats or with an empty input files

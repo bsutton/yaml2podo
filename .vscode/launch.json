@@ -14,7 +14,7 @@
             "type": "dart",
             "args": [
                 "--format",                
-                "test/json_objects.yaml"
+                "test/json_objects.yaml2podo.yaml"
             ]
         }
     ]
