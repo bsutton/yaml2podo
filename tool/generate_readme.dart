@@ -38,6 +38,12 @@ void main(List<String> args) {
   var text = _template;
   for (var name in files) {
     var content = File(name).readAsStringSync();
+    final key = '{{file:$name}}';
+    if (!text.contains(key)) {
+      print('The template does not contain a key: ${key}');
+      exit(-1);
+    }
+
     text = text.replaceAll('{{file:$name}}', content);
   }
 
@@ -69,25 +75,25 @@ Version {{version}}
 
 Declarations (simple enough and informative).
 
-[example/json_objects.yaml](https://github.com/mezoni/yaml2podo/blob/master/example/json_objects.yaml)
+[example/json_objects.yaml](https://github.com/mezoni/yaml2podo/blob/master/example/json_objects.yaml2podo.yaml)
 
 ```yaml
-{{file:example/json_objects.yaml}}
+{{file:example/json_objects.yaml2podo.yaml}}
 ```
 
 Run utility.
 
 <pre>
-pub global run yaml2podo example/json_objects.yaml
+pub global run yaml2podo example/json_objects.yaml2podo.yaml
 </pre>
 
 Generated code does not contain dependencies and does not import anything.
 The same source code that you would write with your hands. Or at least very close to such a code.
 
-[example/json_objects.dart](https://github.com/mezoni/yaml2podo/blob/master/example/json_objects.dart)
+[example/json_objects.dart](https://github.com/mezoni/yaml2podo/blob/master/example/json_objects.yaml2podo.dart)
 
 ```dart
-{{file:example/json_objects.dart}}
+{{file:example/json_objects.yaml2podo.dart}}
 ```
 
 And, of course, an example of using code.

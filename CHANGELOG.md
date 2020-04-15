@@ -1,3 +1,7 @@
+## 0.1.25
+
+- Fixed links in file `tool\generate_readme.dart`
+
 ## 0.1.24
 
 - The definitions of `fromJson` variables in function parameters have been changed from `Function (Map <String, dynamic>)` to `Function (Map)`.
