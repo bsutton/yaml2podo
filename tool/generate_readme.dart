@@ -75,7 +75,7 @@ Version {{version}}
 
 Declarations (simple enough and informative).
 
-[example/json_objects.yaml](https://github.com/mezoni/yaml2podo/blob/master/example/json_objects.yaml2podo.yaml)
+[example/json_objects.yaml2podo.yaml](https://github.com/mezoni/yaml2podo/blob/master/example/json_objects.yaml2podo.yaml)
 
 ```yaml
 {{file:example/json_objects.yaml2podo.yaml}}
@@ -90,7 +90,7 @@ pub global run yaml2podo example/json_objects.yaml2podo.yaml
 Generated code does not contain dependencies and does not import anything.
 The same source code that you would write with your hands. Or at least very close to such a code.
 
-[example/json_objects.dart](https://github.com/mezoni/yaml2podo/blob/master/example/json_objects.yaml2podo.dart)
+[example/json_objects.yaml2podo.dart](https://github.com/mezoni/yaml2podo/blob/master/example/json_objects.yaml2podo.dart)
 
 ```dart
 {{file:example/json_objects.yaml2podo.dart}}
