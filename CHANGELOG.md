@@ -1,3 +1,7 @@
+## 0.1.26
+
+- Minor improvements in the code generator (improved quality of generated code)
+
 ## 0.1.25
 
 - Fixed links in file `tool\generate_readme.dart`

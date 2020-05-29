@@ -17,8 +17,8 @@ String _fromEnum<T>(T value) {
     return null;
   }
 
-  var str = '\$value';
-  var offset = str.indexOf('.');
+  final str = '\$value';
+  final offset = str.indexOf('.');
   if (offset == -1) {
     throw ArgumentError('The value is not an enum: \$value');
   }
@@ -31,8 +31,8 @@ List _fromList(data, Function(dynamic) toJson) {
   if (data == null) {
     return null;
   }
-  var result = [];
-  for (var element in data) {
+  final result = [];
+  for (final element in data) {
     var value;
     if (element != null) {
       value = toJson(element);
@@ -47,10 +47,10 @@ Map<K, V> _fromMap<K, V>(data, V Function(dynamic) toJson) {
   if (data == null) {
     return null;
   }
-  var result = <K, V>{};
-  for (var key in data.keys) {
+  final result = <K, V>{};
+  for (final key in data.keys) {
     V value;
-    var element = data[key];
+    final element = data[key];
     if (element != null) {
       value = toJson(element);
     }
@@ -87,9 +87,9 @@ T _toEnum<T>(String name, Iterable<T> values) {
     return null;
   }
 
-  var offset = '\$T.'.length;
-  for (var value in values) {
-    var key = '\$value'.substring(offset);
+  final offset = '\$T.'.length;
+  for (final value in values) {
+    final key = '\$value'.substring(offset);
     if (name == key) {
       return value;
     }
@@ -104,8 +104,8 @@ List<T> _toList<T>(data, T Function(dynamic) fromJson) {
   if (data == null) {
     return null;
   }
-  var result = <T>[];
-  for (var element in data) {
+  final result = <T>[];
+  for (final element in data) {
     T value;
     if (element != null) {
       value = fromJson(element);
@@ -120,10 +120,10 @@ Map<K, V> _toMap<K, V>(data, V Function(dynamic) fromJson) {
   if (data == null) {
     return null;
   }
-  var result = <K, V>{};
-  for (var key in data.keys) {
+  final result = <K, V>{};
+  for (final key in data.keys) {
     V value;
-    var element = data[key];
+    final element = data[key];
     if (element != null) {
       value = fromJson(element);
     }
@@ -145,8 +145,8 @@ List<T> _toObjectList<T>(data, T Function(Map) fromJson) {
   if (data == null) {
     return null;
   }
-  var result = <T>[];
-  for (var element in data) {
+  final result = <T>[];
+  for (final element in data) {
     T value;
     if (element != null) {
       value = fromJson(element as Map);
@@ -161,8 +161,8 @@ Map<K, V> _toObjectMap<K, V>(data, V Function(Map) fromJson) {
   if (data == null) {
     return null;
   }
-  var result = <K, V>{};
-  for (var key in data.keys) {
+  final result = <K, V>{};
+  for (final key in data.keys) {
     V value;
     var element = data[key];
     if (element != null) {
