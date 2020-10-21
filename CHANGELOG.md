@@ -1,3 +1,7 @@
+## 0.1.27
+
+- Updating dependencies
+
 ## 0.1.26
 
 - Minor improvements in the code generator (improved quality of generated code)
