@@ -1,3 +1,7 @@
+## 0.1.29
+
+- For compatibility with NNBD, the Dart language version override number will be added to the comments of generated files (during the build process)
+
 ## 0.1.28
 
 - For compatibility with NNBD, the Dart language version override number will be added to the comments of generated files
