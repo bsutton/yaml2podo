@@ -1,8 +1,4 @@
 bool alpha(int c) {
-  if (c == null) {
-    throw ArgumentError.notNull('c');
-  }
-
   if (c >= 65 && c <= 90 || c >= 97 && c <= 122) {
     return true;
   }
@@ -11,10 +7,6 @@ bool alpha(int c) {
 }
 
 bool alphanum(int c) {
-  if (c == null) {
-    throw ArgumentError.notNull('c');
-  }
-
   if (alpha(c) || digit(c)) {
     return true;
   }
@@ -23,18 +15,14 @@ bool alphanum(int c) {
 }
 
 String camelizeIdentifier(String ident) {
-  if (ident == null) {
-    throw ArgumentError.notNull('ident');
-  }
-
   if (ident.isEmpty) {
     return ident;
   }
 
   var pos = 0;
-  var sb = StringBuffer();
+  final sb = StringBuffer();
   while (pos < ident.length) {
-    var c = ident.codeUnitAt(pos);
+    final c = ident.codeUnitAt(pos);
     if (c == 95) {
       sb.write('_');
       pos++;
@@ -45,8 +33,8 @@ String camelizeIdentifier(String ident) {
 
   var needCapitalize = false;
   for (; pos < ident.length; pos++) {
-    var c = ident.codeUnitAt(pos);
-    var s = ident[pos];
+    final c = ident.codeUnitAt(pos);
+    final s = ident[pos];
     if (c == 95) {
       if (pos + 1 < ident.length) {
         if (ident.codeUnitAt(pos + 1) == 95) {
@@ -77,19 +65,15 @@ String camelizeIdentifier(String ident) {
 }
 
 String capitalizeIdentifier(String ident) {
-  if (ident == null) {
-    throw ArgumentError.notNull('ident');
-  }
-
   if (ident.isEmpty) {
     return ident;
   }
 
-  var prefix = <String>[];
+  final prefix = <String>[];
   var rest = ident;
   var pos = 0;
   while (pos < ident.length) {
-    var c = ident.codeUnitAt(pos);
+    final c = ident.codeUnitAt(pos);
     if (c == 36 || c == 95) {
       prefix.add(ident[pos++]);
     } else {
@@ -107,30 +91,22 @@ String capitalizeIdentifier(String ident) {
 }
 
 String convertToIdentifier(String str, String replacement) {
-  if (str == null) {
-    throw ArgumentError.notNull('str');
-  }
-
   if (str.isEmpty) {
     throw ArgumentError.value(str, 'str', 'Must not be empty');
   }
 
-  if (replacement == null) {
-    throw ArgumentError.notNull('replacement');
-  }
-
   str = str[0] + str.substring(1).replaceAll('-', '_');
   var pos = 0;
-  var sb = StringBuffer();
+  final sb = StringBuffer();
   if (digit(str.codeUnitAt(pos))) {
-    var s = str[pos];
+    final s = str[pos];
     sb.write(replacement);
     sb.write(s);
     pos++;
   }
 
   while (pos < str.length) {
-    var c = str.codeUnitAt(pos);
+    final c = str.codeUnitAt(pos);
     if (!(alphanum(c) || c == 95)) {
       sb.write(replacement);
       pos++;
@@ -140,8 +116,8 @@ String convertToIdentifier(String str, String replacement) {
   }
 
   for (; pos < str.length; pos++) {
-    var c = str.codeUnitAt(pos);
-    var s = str[pos];
+    final c = str.codeUnitAt(pos);
+    final s = str[pos];
     if (alphanum(c) || c == 95) {
       sb.write(s);
     } else {
@@ -149,15 +125,11 @@ String convertToIdentifier(String str, String replacement) {
     }
   }
 
-  var result = sb.toString();
+  final result = sb.toString();
   return result;
 }
 
 bool digit(int c) {
-  if (c == null) {
-    throw ArgumentError.notNull('c');
-  }
-
   if (c >= 48 && c <= 57) {
     return true;
   }
@@ -166,22 +138,14 @@ bool digit(int c) {
 }
 
 String makePublicIdentifier(String ident, String option) {
-  if (ident == null) {
-    throw ArgumentError.notNull('ident');
-  }
-
-  if (option == null) {
-    throw ArgumentError.notNull('option');
-  }
-
   if (ident.isEmpty) {
     return option;
   }
 
-  var suffix = <String>[];
+  final suffix = <String>[];
   var pos = 0;
   while (pos < ident.length) {
-    var c = ident.codeUnitAt(pos);
+    final c = ident.codeUnitAt(pos);
     if (c == 95) {
       suffix.add('_');
       pos++;
@@ -195,6 +159,6 @@ String makePublicIdentifier(String ident, String option) {
     rest = option;
   }
 
-  var result = rest + suffix.join('');
+  final result = rest + suffix.join('');
   return result;
 }

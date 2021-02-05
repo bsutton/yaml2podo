@@ -7,14 +7,14 @@ class Resp2YamlGenerator {
 
   List<String> generate(dynamic jsonObject, List<String> path) {
     _analyze(jsonObject, path);
-    var lines = <String>[];
+    final lines = <String>[];
     for (var className in _classes.keys) {
       lines.add('${className}:');
-      var class_ = _classes[className];
+      final class_ = _classes[className]!;
       for (var key in class_.keys) {
-        var typeUnion = class_[key];
-        var typeName = _reduceTypeUnion(typeUnion);
-        var escaped = key.replaceAll('"', '\\\"');
+        final typeUnion = class_[key]!;
+        final typeName = _reduceTypeUnion(typeUnion);
+        final escaped = key.replaceAll('"', '\\\"');
         lines.add('  "${escaped}": ${typeName}');
       }
 
@@ -38,7 +38,7 @@ class Resp2YamlGenerator {
     } else if (value is int) {
       return 'int';
     } else if (value is String) {
-      DateTime date;
+      DateTime? date;
       try {
         date = DateTime.parse(value);
         if (value != date.toIso8601String()) {
@@ -66,9 +66,9 @@ class Resp2YamlGenerator {
       return 'List<${_unknownTypeName}>';
     }
 
-    var typeUnion = <String>{};
+    final typeUnion = <String>{};
     for (var element in list) {
-      var typeName = _analyze(element, path);
+      final typeName = _analyze(element, path);
       typeUnion.add(typeName);
       // TODO: Temporary solution. Need implement a deeper analysis
       if (element is Map) {
@@ -76,18 +76,18 @@ class Resp2YamlGenerator {
       }
     }
 
-    var typeName = _reduceTypeUnion(typeUnion);
+    final typeName = _reduceTypeUnion(typeUnion);
     return 'List<${typeName}>';
   }
 
   String _analyzeMap(Map map, List<String> path) {
-    var className = _registerClass(path);
-    var class_ = _classes[className];
+    final className = _registerClass(path);
+    final class_ = _classes[className]!;
     for (var key in map.keys) {
-      var newkey = key.toString();
-      var value = map[key];
-      var newPath = path.toList()..add(newkey);
-      var typeName = _analyze(value, newPath);
+      final newkey = key.toString();
+      final value = map[key];
+      final newPath = path.toList()..add(newkey);
+      final typeName = _analyze(value, newPath);
       var typeUnion = class_[newkey];
       if (typeUnion == null) {
         typeUnion = <String>{};
@@ -123,7 +123,7 @@ class Resp2YamlGenerator {
   }
 
   String _registerClass(List<String> path) {
-    var parts = <String>[];
+    final parts = <String>[];
     for (var part in path) {
       part = _utils.convertToIdentifier(part, '\$');
       part = _utils.makePublicIdentifier(part, 'Anon');

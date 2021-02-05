@@ -1,38 +1,24 @@
 part of '../../yaml2podo_generator.dart';
 
 class Yaml2PodoGenerator {
-  bool _camelize;
+  bool camelize;
 
-  TypeDeclaration _dynamicType;
+  late final TypeDeclaration _dynamicType;
 
-  bool _immutable;
+  bool immutable;
 
-  Map<String, TypeDeclaration> _builtinTypes;
+  final Map<String, TypeDeclaration> _builtinTypes = {};
 
-  Set<String> _objectTypeNames;
+  final Set<String> _objectTypeNames = {};
 
-  Set<String> _reservedWords;
+  final Set<String> _reservedWords = {};
 
-  List<String> _stages;
+  final List<String> _stages = [];
 
-  Map<String, TypeDeclaration> _types;
+  final Map<String, TypeDeclaration> _types = {};
 
-  Yaml2PodoGenerator({bool camelize = true, bool immutable = true}) {
-    if (camelize == null) {
-      throw ArgumentError.notNull('camelize');
-    }
-
-    if (immutable == null) {
-      throw ArgumentError.notNull('immutable');
-    }
-
-    _camelize = camelize;
-    _immutable = immutable;
-    _objectTypeNames = {};
-    _stages = [];
-    _types = {};
-    _builtinTypes = {};
-    var builtinTypeNames = <String>[
+  Yaml2PodoGenerator({this.camelize = true, this.immutable = true}) {
+    final builtinTypeNames = <String>[
       'bool',
       'DateTime',
       'double',
@@ -43,7 +29,7 @@ class Yaml2PodoGenerator {
       'String',
     ];
 
-    _reservedWords = <String>{
+    _reservedWords.addAll(const [
       'assert',
       'break',
       'case',
@@ -77,26 +63,22 @@ class Yaml2PodoGenerator {
       'var',
       'void',
       'while',
-      'with',
-    };
+      'with'
+    ]);
 
     for (var name in builtinTypeNames) {
-      var type = _createBuiltinType(name);
+      final type = _createBuiltinType(name);
       _builtinTypes[name] = type;
       _types[name] = type;
     }
 
-    _dynamicType = _builtinTypes['dynamic'];
+    _dynamicType = _builtinTypes['dynamic']!;
   }
 
   List<String> generate(Map source, {bool camelize = true}) {
-    if (source == null) {
-      throw ArgumentError.notNull('source');
-    }
-
     _stages.clear();
     for (var key in source.keys) {
-      var name = key.toString();
+      final name = key.toString();
       _addStage('Parsing data object type declaration \'$name\'');
       var type = _parseTypeName(name);
       if (type.arguments.isNotEmpty) {
@@ -121,7 +103,7 @@ class Yaml2PodoGenerator {
       }
 
       type.isUnknownType = false;
-      var properties = source[key];
+      final properties = source[key];
       if (properties is Map) {
         _parseProperties(type, properties);
       } else if (properties is List) {
@@ -137,7 +119,7 @@ class Yaml2PodoGenerator {
     }
 
     _analyzeTypes();
-    var result = _generateCode();
+    final result = _generateCode();
     return result;
   }
 
@@ -152,9 +134,9 @@ class Yaml2PodoGenerator {
       return type;
     }
 
-    var arguments = type.arguments;
+    final arguments = type.arguments;
     for (var i = 0; i < arguments.length; i++) {
-      var argument = arguments[i];
+      final argument = arguments[i];
       arguments[i] = _analyzeType(argument, processed);
     }
 
@@ -185,7 +167,7 @@ class Yaml2PodoGenerator {
         checkNumberOfTypeArguments([_dynamicType]);
         break;
       case 'Map':
-        checkNumberOfTypeArguments([_types['String'], _dynamicType]);
+        checkNumberOfTypeArguments([_types['String']!, _dynamicType]);
         break;
     }
 
@@ -210,9 +192,9 @@ class Yaml2PodoGenerator {
     }
 
     _addStage('Analyzing types');
-    var processed = <TypeDeclaration>{};
+    final processed = <TypeDeclaration>{};
     for (var name in _objectTypeNames) {
-      var type = _types[name];
+      final type = _types[name]!;
       _addStage('Analyzing type \'$type\'');
       for (var property in type.properties.values) {
         _addStage('Analyzing prorerty \'$property\'');
@@ -227,15 +209,14 @@ class Yaml2PodoGenerator {
   }
 
   TypeDeclaration _createBuiltinType(String name) {
-    var result = TypeDeclaration();
-    result.name = name;
+    final result = TypeDeclaration(name: name);
     result.isCustomType = false;
     result.isUnknownType = false;
     return result;
   }
 
   void _error(String message) {
-    var sb = StringBuffer();
+    final sb = StringBuffer();
     for (var stage in _stages) {
       sb.writeln(stage);
     }
@@ -244,21 +225,21 @@ class Yaml2PodoGenerator {
     throw FormatException(sb.toString());
   }
 
-  TypeDeclaration _findType(TypeDeclaration type) {
+  TypeDeclaration? _findType(TypeDeclaration type) {
     return _types[type.toString()];
   }
 
   List<String> _generateCode() {
-    var classes = _objectTypeNames.toList();
+    final classes = _objectTypeNames.toList();
     classes.sort();
-    var dartCodeGenerator = DartCodeGenerator();
-    var types = <TypeDeclaration>[];
+    final dartCodeGenerator = DartCodeGenerator();
+    final types = <TypeDeclaration>[];
     for (var name in classes) {
-      var type = _types[name];
+      final type = _types[name]!;
       types.add(type);
     }
 
-    var result = dartCodeGenerator.generate(types);
+    final result = dartCodeGenerator.generate(types);
     return result;
   }
 
@@ -272,7 +253,7 @@ class Yaml2PodoGenerator {
     }
 
     type.isEnumType = true;
-    var names = <String>{};
+    final names = <String>{};
     for (var value in values) {
       _addStage('Parsing enum value \'$value\'');
       if (value is String) {
@@ -290,9 +271,9 @@ class Yaml2PodoGenerator {
           }
         }
 
-        var parts = value.toString().split('.');
-        var alias = parts[0].trim();
-        var name = alias;
+        final parts = value.toString().split('.');
+        String? alias = parts[0].trim();
+        final name = alias;
         if (parts.length == 2) {
           alias = parts[1].trim();
         } else if (parts.length > 2) {
@@ -307,10 +288,8 @@ class Yaml2PodoGenerator {
           alias = null;
         }
 
-        var property = PropertyDeclaration();
+        final property = PropertyDeclaration(name: name, type: type);
         property.alias = alias;
-        property.name = name;
-        property.type = type;
         type.properties[name] = property;
       } else {
         errorInvalidValueName(value.toString());
@@ -319,12 +298,12 @@ class Yaml2PodoGenerator {
   }
 
   void _parseProperties(TypeDeclaration type, Map data) {
-    var names = <String>{};
-    var properties = <String, PropertyDeclaration>{};
+    final names = <String>{};
+    final properties = <String, PropertyDeclaration>{};
     for (var key in data.keys) {
       _addStage('Parsing property \'$key\'');
-      var parts = key.toString().split('.');
-      var alias = parts[0].trim();
+      final parts = key.toString().split('.');
+      String? alias = parts[0].trim();
       var name = alias;
       if (parts.length == 2) {
         alias = parts[1].trim();
@@ -333,7 +312,7 @@ class Yaml2PodoGenerator {
       }
 
       name = _utils.convertToIdentifier(name, '\$');
-      if (_camelize) {
+      if (camelize) {
         name = _utils.camelizeIdentifier(name);
       }
 
@@ -372,22 +351,20 @@ class Yaml2PodoGenerator {
         alias = null;
       }
 
-      var type = _parseTypeName(data[key].toString());
-      var property = PropertyDeclaration();
+      final type = _parseTypeName(data[key].toString());
+      final property = PropertyDeclaration(name: name, type: type);
       property.alias = alias;
-      property.name = name;
-      property.type = type;
-      property.isFinal = _immutable;
+      property.isFinal = immutable;
       properties[name] = property;
       _removeStage();
     }
 
     Map<K, V> sortMap<K, V>(Map<K, V> map) {
-      var result = <K, V>{};
-      var keys = map.keys.toList();
+      final result = <K, V>{};
+      final keys = map.keys.toList();
       keys.sort();
       for (var key in keys) {
-        result[key] = map[key];
+        result[key] = map[key]!;
       }
 
       return result;
@@ -401,14 +378,14 @@ class Yaml2PodoGenerator {
       _error('Identifier \'name\' cannot be used as a type name');
     }
 
-    var parser = TypeParser();
+    final parser = TypeParser();
     var type = parser.parse(name);
     type = _analyzeType(type, {});
     return type;
   }
 
   TypeDeclaration _registerType(TypeDeclaration type) {
-    var foundType = _findType(type);
+    final foundType = _findType(type);
     if (foundType != null) {
       return foundType;
     }

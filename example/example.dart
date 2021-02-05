@@ -1,8 +1,8 @@
 import 'json_objects.yaml2podo.dart';
 
 void main() {
-  var products = _getProducts();
-  var items = _creataOrderItems(products);
+  final products = _getProducts();
+  final items = _creataOrderItems(products);
   var order = Order(
       amount: _calculateAmount(items),
       date: DateTime(2019, 05, 31),
@@ -14,11 +14,20 @@ void main() {
   print(object);
 }
 
+double _calculateAmount(List<OrderItem> items) {
+  var result = 0.0;
+  for (var item in items) {
+    result += item.quantity! * item.price!;
+  }
+
+  return result;
+}
+
 List<OrderItem> _creataOrderItems(List<Product> products) {
-  var result = <OrderItem>[];
+  final result = <OrderItem>[];
   for (var i = 0; i < products.length; i++) {
-    var product = products[i];
-    var orderItem =
+    final product = products[i];
+    final orderItem =
         OrderItem(price: 10.0 + i, product: product, quantity: i + 1);
     result.add(orderItem);
   }
@@ -26,19 +35,10 @@ List<OrderItem> _creataOrderItems(List<Product> products) {
   return result;
 }
 
-double _calculateAmount(List<OrderItem> items) {
-  var result = 0.0;
-  for (var item in items) {
-    result += item.quantity * item.price;
-  }
-
-  return result;
-}
-
 List<Product> _getProducts() {
-  var result = <Product>[];
+  final result = <Product>[];
   for (var i = 0; i < 2; i++) {
-    var product = Product(id: i, name: 'Product $i');
+    final product = Product(id: i, name: 'Product $i');
     result.add(product);
   }
 

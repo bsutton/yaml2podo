@@ -1,17 +1,19 @@
 part of '../../type_system.dart';
 
 class PropertyDeclaration {
-  String alias;
+  String? alias;
 
   bool isFinal = false;
 
-  String name;
+  final String name;
 
-  TypeDeclaration type;
+  final TypeDeclaration type;
+
+  PropertyDeclaration({required this.name, required this.type});
 
   @override
   String toString() {
-    var sb = StringBuffer();
+    final sb = StringBuffer();
     sb.write(name);
     sb.write(': ');
     sb.write(type);

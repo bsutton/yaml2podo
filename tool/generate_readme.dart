@@ -2,12 +2,12 @@ import 'dart:io';
 import 'package:yaml/yaml.dart' as _yaml;
 
 void main(List<String> args) {
-  var pubspec = _yaml.loadYaml(File('pubspec.yaml').readAsStringSync());
-  var version = pubspec['version'].toString();
+  final pubspec = _yaml.loadYaml(File('pubspec.yaml').readAsStringSync());
+  final version = pubspec['version'].toString();
   File('lib/version.dart')
       .writeAsStringSync('const String version = \'$version\';\n');
 
-  var executables = [
+  final executables = [
     [
       'dart',
       ['bin/yaml2podo.dart', 'example/json_objects.yaml2podo.yaml']
@@ -19,9 +19,9 @@ void main(List<String> args) {
   ];
 
   for (var element in executables) {
-    var executable = element[0] as String;
-    var arguments = element[1] as List<String>;
-    var result = Process.runSync(executable, arguments, runInShell: true);
+    final executable = element[0] as String;
+    final arguments = element[1] as List<String>;
+    final result = Process.runSync(executable, arguments, runInShell: true);
     if (result.exitCode != 0) {
       print(result.stdout);
       print(result.stderr);
@@ -29,7 +29,7 @@ void main(List<String> args) {
     }
   }
 
-  var files = [
+  final files = [
     'example/example.dart',
     'example/json_objects.yaml2podo.yaml',
     'example/json_objects.yaml2podo.dart'
@@ -37,7 +37,7 @@ void main(List<String> args) {
 
   var text = _template;
   for (var name in files) {
-    var content = File(name).readAsStringSync();
+    final content = File(name).readAsStringSync();
     final key = '{{file:$name}}';
     if (!text.contains(key)) {
       print('The template does not contain a key: ${key}');
@@ -47,11 +47,11 @@ void main(List<String> args) {
     text = text.replaceAll('{{file:$name}}', content);
   }
 
-  var description = pubspec['description'].toString();
+  final description = pubspec['description'].toString();
   text = text.replaceAll('{{description}}', description);
   text = text.replaceAll('{{version}}', version);
 
-  var result =
+  final result =
       Process.runSync('dart', ['example/example.dart'], runInShell: true);
   if (result.exitCode != 0) {
     print(result.stdout);

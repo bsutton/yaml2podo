@@ -3,15 +3,15 @@ part of '../../_type_parser.dart';
 class TypeTokenizer {
   static const _eof = 0;
 
-  int _ch;
+  late int _ch;
 
-  int _pos;
+  late int _pos;
 
-  String _source;
+  late String _source;
 
   List<Token> tokenize(String source) {
     _source = source;
-    var tokens = <Token>[];
+    final tokens = <Token>[];
     _reset();
     while (true) {
       _white();
@@ -23,7 +23,7 @@ class TypeTokenizer {
         break;
       }
 
-      var start = _pos;
+      final start = _pos;
       switch (_ch) {
         case 44:
           text = ',';
@@ -56,10 +56,7 @@ class TypeTokenizer {
           }
       }
 
-      var token = Token();
-      token.kind = kind;
-      token.start = start;
-      token.text = text;
+      final token = Token(kind: kind, start: start, text: text);
       tokens.add(token);
     }
 

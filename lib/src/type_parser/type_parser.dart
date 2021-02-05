@@ -1,17 +1,17 @@
 part of '../../_type_parser.dart';
 
 class TypeParser {
-  String _source;
+  String? _source;
 
-  Token _token;
+  late Token _token;
 
-  List<Token> _tokens;
+  late List<Token> _tokens;
 
-  int _pos;
+  int _pos = 0;
 
   TypeDeclaration parse(String source) {
     _source = source;
-    var tokenizer = TypeTokenizer();
+    final tokenizer = TypeTokenizer();
     _tokens = tokenizer.tokenize(source);
     _reset();
 
@@ -36,8 +36,8 @@ class TypeParser {
   }
 
   List<TypeDeclaration> _parseArgs() {
-    var result = <TypeDeclaration>[];
-    var type = _parseType();
+    final result = <TypeDeclaration>[];
+    final type = _parseType();
     result.add(type);
     while (true) {
       if (_token.kind != _TokenKind.comma) {
@@ -45,7 +45,7 @@ class TypeParser {
       }
 
       _nextToken();
-      var type = _parseType();
+      final type = _parseType();
       result.add(type);
     }
 
@@ -53,7 +53,7 @@ class TypeParser {
   }
 
   TypeDeclaration _parseType() {
-    var name = _token.text;
+    final name = _token.text;
     _match(_TokenKind.ident);
     var arguments = <TypeDeclaration>[];
     if (_token.kind == _TokenKind.open) {
@@ -62,8 +62,7 @@ class TypeParser {
       _match(_TokenKind.close);
     }
 
-    var result = TypeDeclaration();
-    result.name = name;
+    final result = TypeDeclaration(name: name);
     result.arguments.addAll(arguments);
     return result;
   }

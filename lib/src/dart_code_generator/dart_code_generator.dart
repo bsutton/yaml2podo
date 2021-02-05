@@ -1,62 +1,11 @@
 part of '../../dart_code_generator.dart';
 
 class DartCodeGenerator {
-  final Map<String, List<String> Function()> _methodGenarators = {};
-
   List<String> generate(Iterable<TypeDeclaration> types) {
-    var result = <String>[];
-    var lines = _generateFile(types);
+    final result = <String>[];
+    final lines = _generateFile(types);
     result.addAll(lines);
     return result;
-  }
-
-  void _addMethodGenerator(String name) {
-    String template;
-    switch (name) {
-      case 'fromDateTime':
-        template = _methodFromDateTime;
-        break;
-      case 'fromEnum':
-        template = _methodFromEnum;
-        break;
-      case 'fromList':
-        template = _methodFromList;
-        break;
-      case 'fromMap':
-        template = _methodFromMap;
-        break;
-      case 'toDateTime':
-        template = _methodToDateTime;
-        break;
-      case 'toDouble':
-        template = _methodToDouble;
-        break;
-      case 'toEnum':
-        template = _methodToEnum;
-        break;
-      case 'toList':
-        template = _methodToList;
-        break;
-      case 'toMap':
-        template = _methodToMap;
-        break;
-      case 'toObject':
-        template = _methodToObject;
-        break;
-      case 'toObjectList':
-        template = _methodToObjectList;
-        break;
-      case 'toObjectMap':
-        template = _methodToObjectMap;
-        break;
-      default:
-        throw StateError('Unknown method name: $name');
-    }
-
-    if (!_methodGenarators.containsKey(name)) {
-      List<String> generator() => LineSplitter().convert(template).toList();
-      _methodGenarators[name] = generator;
-    }
   }
 
   List<String> _generateClass(TypeDeclaration type) {
@@ -85,13 +34,13 @@ class {{NAME}} {
   }
 
   List<String> _generateConstructor(TypeDeclaration type) {
-    var sb = StringBuffer();
+    final sb = StringBuffer();
     sb.write('  ');
     sb.write(type.name);
     sb.write('(');
-    var arguments = <String>[];
+    final arguments = <String>[];
     for (var property in type.properties.values) {
-      var sb = StringBuffer();
+      final sb = StringBuffer();
       sb.write('this.');
       sb.write(property.name);
       arguments.add(sb.toString());
@@ -108,12 +57,12 @@ class {{NAME}} {
   }
 
   List<String> _generateEnum(TypeDeclaration type) {
-    var result = <String>[];
-    var sb = StringBuffer();
+    final result = <String>[];
+    final sb = StringBuffer();
     sb.write(' enum ');
     sb.write(type.name);
     sb.write(' { ');
-    var values = <String>[];
+    final values = <String>[];
     for (var property in type.properties.values) {
       values.add(property.name);
     }
@@ -133,11 +82,11 @@ class {{NAME}} {
 
     var result = template;
     result = result.replaceAll('{{NAME}}', type.name);
-    var properties = type.properties;
-    var names = properties.values.map((e) => e.name);
-    var arguments = <String>[];
+    final properties = type.properties;
+    final names = properties.values.map((e) => e.name);
+    final arguments = <String>[];
     for (var name in names) {
-      var property = properties[name];
+      final property = properties[name]!;
       var alias = property.alias;
       if (alias != null) {
         alias = alias.replaceAll('\$', '\\\$');
@@ -146,8 +95,8 @@ class {{NAME}} {
         alias = name;
       }
 
-      var reader = _getReader('json[\'$alias\']', property.type, true);
-      var sb = StringBuffer();
+      final reader = _getReader('json[\'$alias\']', property.type, true);
+      final sb = StringBuffer();
       sb.write('      ');
       sb.write(name);
       sb.write(': ');
@@ -161,14 +110,14 @@ class {{NAME}} {
   }
 
   List<String> _generateFile(Iterable<TypeDeclaration> types) {
-    var result = <String>[];
+    final result = <String>[];
     for (var type in types) {
       if (type.isCustomType) {
         if (type.isEnumType) {
-          var lines = _generateEnum(type);
+          final lines = _generateEnum(type);
           result.addAll(lines);
         } else {
-          var lines = _generateClass(type);
+          final lines = _generateClass(type);
           result.addAll(lines);
         }
       }
@@ -176,23 +125,14 @@ class {{NAME}} {
       result.add('');
     }
 
-    var lines = _generateMethods();
+    final lines = _generateMethods();
     result.addAll(lines);
     return result;
   }
 
   List<String> _generateMethods() {
-    var result = <String>[];
-    var names = _methodGenarators.keys.toList();
-    names.sort();
-    for (var name in names) {
-      var genarator = _methodGenarators[name];
-      var lines = genarator();
-      result.addAll(lines);
-      result.add('');
-    }
-
-    return result;
+    final template = template_methods;
+    return LineSplitter().convert(template).toList();
   }
 
   List<String> _generateMethodToJson(TypeDeclaration type) {
@@ -202,15 +142,15 @@ class {{NAME}} {
   }''';
 
     var result = template;
-    var properties = type.properties;
-    var names = properties.values.map((e) => e.name);
-    var statement = <String>[];
+    final properties = type.properties;
+    final names = properties.values.map((e) => e.name);
+    final statement = <String>[];
     if (names.isEmpty) {
       statement.add('    return {};');
     } else {
       statement.add('    return {');
       for (var name in names) {
-        var property = properties[name];
+        final property = properties[name]!;
         var alias = property.alias;
         if (alias != null) {
           alias = alias.replaceAll('\$', '\\\$');
@@ -219,8 +159,8 @@ class {{NAME}} {
           alias = name;
         }
 
-        var writer = _getWriter(name, property.type, true);
-        var sb = StringBuffer();
+        final writer = _getWriter(name, property.type, true);
+        final sb = StringBuffer();
         sb.write('      ');
         sb.write('\'');
         sb.write(alias);
@@ -238,18 +178,19 @@ class {{NAME}} {
   }
 
   List<String> _generateProperties(TypeDeclaration type) {
-    var result = <String>[];
-    var names = type.properties.values.map((e) => e.name);
-    var properties = type.properties;
+    final result = <String>[];
+    final names = type.properties.values.map((e) => e.name);
+    final properties = type.properties;
     for (var name in names) {
-      var property = properties[name];
-      var sb = StringBuffer();
+      final property = properties[name]!;
+      final sb = StringBuffer();
       sb.write('  ');
       if (property.isFinal) {
         sb.write('final ');
       }
 
-      sb.write(property.type.toString());
+      //sb.write(property.type.toString());
+      sb.write(_typeToString(property.type));
       sb.write(' ');
       sb.write(property.name);
       sb.write(';');
@@ -267,34 +208,34 @@ class {{NAME}} {
         switch (type.name) {
           case 'Iterable':
           case 'List':
-            var arguments = type.arguments;
-            var elementType = arguments[0];
-            var reader = _getReader('e', elementType, false);
+            final arguments = type.arguments;
+            final elementType = arguments[0];
+            final reader = _getReader('e', elementType, false);
             if (_isCustomObjectType(elementType)) {
-              return _methodCall('toObjectList', [name, reader]);
+              return _methodCall('toObjectList', [name, 'e', reader]);
             }
 
-            return _methodCall('toList', [name, reader]);
+            return _methodCall('toList', [name, 'e', reader]);
           case 'Map':
-            var arguments = type.arguments;
-            var valueType = arguments[1];
-            var reader = _getReader('e', valueType, false);
+            final arguments = type.arguments;
+            final valueType = arguments[1];
+            final reader = _getReader('e', valueType, false);
             if (_isCustomObjectType(valueType)) {
-              return _methodCall('toObjectMap', [name, reader]);
+              return _methodCall('toObjectMap', [name, 'e', reader]);
             }
 
-            return _methodCall('toMap', [name, reader]);
+            return _methodCall('toMap', [name, 'e', reader]);
           default:
             if (type.arguments.isNotEmpty) {
               throw ArgumentError('Generic type is not supported: $type');
             }
 
-            var sb = StringBuffer();
+            final sb = StringBuffer();
             sb.write(type.name);
             sb.write('.fromJson(e)');
-            var reader = sb.toString();
+            final reader = sb.toString();
             if (canBeNull) {
-              return _methodCall('toObject', [name, reader]);
+              return _methodCall('toObject', [name, 'e', reader]);
             }
 
             return reader;
@@ -306,10 +247,10 @@ class {{NAME}} {
         case 'int':
         case 'num':
         case 'String':
-          var sb = StringBuffer();
+          final sb = StringBuffer();
           sb.write(name);
           sb.write(' as ');
-          sb.write(type.toString());
+          sb.write(_typeToString(type));
           return sb.toString();
         case 'DateTime':
           return _methodCall('toDateTime', [name]);
@@ -332,19 +273,23 @@ class {{NAME}} {
         switch (type.name) {
           case 'Iterable':
           case 'List':
-            var arguments = type.arguments;
-            var writer = _getWriter('e', arguments[0], false);
-            return _methodCall('fromList', [name, writer]);
+            final arguments = type.arguments;
+            final elementType = _typeToString(arguments[0]);
+            //var writer = _getWriter('e', arguments[0], false);
+            final writer = _getWriter('e', arguments[0], canBeNull);
+            return _methodCall('fromList', [name, '$elementType e', writer]);
           case 'Map':
-            var arguments = type.arguments;
-            var writer = _getWriter('e', arguments[1], false);
-            return _methodCall('fromMap', [name, writer]);
+            final arguments = type.arguments;
+            final valueType = _typeToString(arguments[1]);
+            //var writer = _getWriter('e', arguments[1], false);
+            final writer = _getWriter('e', arguments[1], canBeNull);
+            return _methodCall('fromMap', [name, '$valueType e', writer]);
           default:
             if (type.arguments.isNotEmpty) {
               throw ArgumentError('Generic type is not supported: $type');
             }
 
-            var sb = StringBuffer();
+            final sb = StringBuffer();
             sb.write(name);
             if (canBeNull) {
               sb.write('?');
@@ -396,15 +341,15 @@ class {{NAME}} {
     return false;
   }
 
-  String _methodCall(String name, List<String> args) {
+  String _methodCall(String method, List<String> args) {
     void checkArgs(int n) {
       if (args.length != n) {
-        throw StateError('Wrong number of argumnets for method call: $name');
+        throw StateError('Wrong number of argumnets for method call: $method');
       }
     }
 
     String result;
-    switch (name) {
+    switch (method) {
       case 'fromDateTime':
       case 'fromEnum':
       case 'toDateTime':
@@ -420,15 +365,34 @@ class {{NAME}} {
       case 'toObject':
       case 'toObjectList':
       case 'toObjectMap':
-        checkArgs(2);
-        result = '(${args[0]}, (e) => ${args[1]})';
+        checkArgs(3);
+        result = '(${args[0]}, (${args[1]}) => ${args[2]})';
         break;
       default:
-        throw StateError('Unknown method call: $name');
+        throw StateError('Unknown method call: $method');
     }
 
-    _addMethodGenerator(name);
-    result = '_' + name + result;
+    result = '_' + method + result;
     return result;
+  }
+
+  String _typeToString(TypeDeclaration type) {
+    final name = type.name;
+    final arguments = type.arguments;
+    final sb = StringBuffer();
+    sb.write(name);
+    if (arguments.isNotEmpty) {
+      sb.write('<');
+      final args = <String>[];
+      for (var argument in arguments) {
+        args.add(_typeToString(argument));
+      }
+
+      sb.write(args.join(', '));
+      sb.write('>');
+    }
+
+    sb.write('?');
+    return sb.toString();
   }
 }

@@ -9,17 +9,19 @@ class TypeDeclaration {
 
   bool isUnknownType = true;
 
-  String name;
+  final String name;
+
+  TypeDeclaration({required this.name});
 
   Map<String, PropertyDeclaration> properties = {};
 
   @override
   String toString() {
-    var sb = StringBuffer();
+    final sb = StringBuffer();
     sb.write(name);
     if (arguments.isNotEmpty) {
       sb.write('<');
-      var args = <String>[];
+      final args = <String>[];
       for (var argument in arguments) {
         args.add(argument.toString());
       }

@@ -1,6 +1,6 @@
 import 'package:test/test.dart';
-
 import 'package:yaml2podo/_utils.dart' as _utils;
+
 import 'json_objects.yaml2podo.dart';
 
 void main() {
@@ -63,7 +63,7 @@ void _testBinUtils() {
   });
 
   test('_utils: convertToIdentifier()', () {
-    var replacement = '\$';
+    final replacement = '\$';
     var result = _utils.convertToIdentifier('1abc', replacement);
     expect(result, '\$1abc');
     result = _utils.convertToIdentifier('a:bc', replacement);
@@ -100,20 +100,20 @@ void _testBinUtils() {
 
 void _testJsonSerializer() {
   test('Serialize "Order" instance', () {
-    var order =
+    final order =
         Order(amount: 0, date: DateTime.now(), items: [], isShipped: true);
     for (var i = 0; i < _products.length; i++) {
-      var product = _products[i];
-      var item = OrderItem(price: i, product: product, quantity: i);
-      order.items.add(item);
+      final product = _products[i];
+      final item = OrderItem(price: i, product: product, quantity: i);
+      order.items?.add(item);
     }
 
-    order.items.add(null);
-    order.items.add(OrderItem());
-    var jsonOrder = order.toJson();
-    var expected = <String, dynamic>{
+    order.items?.add(null);
+    order.items?.add(OrderItem());
+    final jsonOrder = order.toJson();
+    final expected = <String, dynamic>{
       'amount': 0,
-      'date': order.date.toIso8601String(),
+      'date': order.date?.toIso8601String(),
       'items': [
         {
           'product': {'id': 0, 'name': 'Product 0'},
@@ -136,12 +136,12 @@ void _testJsonSerializer() {
   });
 
   test('Serialize "Foo" instance', () {
-    var foo = Foo(bars: {});
-    foo.bars['0'] = Bar(i: 0);
-    foo.bars['1'] = Bar(i: 1);
-    foo.bars['2'] = null;
-    var jsonOrder = foo.toJson();
-    var expected = {
+    final foo = Foo(bars: {});
+    foo.bars?['0'] = Bar(i: 0);
+    foo.bars?['1'] = Bar(i: 1);
+    foo.bars?['2'] = null;
+    final jsonOrder = foo.toJson();
+    final expected = {
       'bars': {
         '0': {'i': 0},
         '1': {'i': 1},
@@ -153,9 +153,9 @@ void _testJsonSerializer() {
   });
 
   test('Serialize "Alias" instance', () {
-    var value = Alias(clazz: 'foo');
-    var jsonValue = value.toJson();
-    var expected = {
+    final value = Alias(clazz: 'foo');
+    final jsonValue = value.toJson();
+    final expected = {
       'class': 'foo',
     };
     expect(jsonValue, expected);
@@ -163,7 +163,7 @@ void _testJsonSerializer() {
   });
 
   test('Serialize "Super" instance', () {
-    var value = Super(
+    final value = Super(
         boolean: true,
         date: DateTime.now(),
         float: 1.0,
@@ -173,17 +173,17 @@ void _testJsonSerializer() {
         map: {},
         string: 'hello');
 
-    value.list.add({});
+    value.list?.add({});
 
-    value.map[0] = [];
-    value.map[0].add(Bar(i: 123));
-    value.map[1] = null;
-    value.list[0]['bar'] = Bar(i: 99);
-    var jsonValue = value.toJson();
-    var expected = {
+    value.map?[0] = [];
+    value.map?[0]?.add(Bar(i: 123));
+    value.map?[1] = null;
+    value.list?[0]?['bar'] = Bar(i: 99);
+    final jsonValue = value.toJson();
+    final expected = {
       'foo': null,
       'foo2': {'bars': null},
-      'date': value.date.toIso8601String(),
+      'date': value.date?.toIso8601String(),
       'string': 'hello',
       'boolean': true,
       'map2': null,
@@ -207,14 +207,14 @@ void _testJsonSerializer() {
 }
 
 void _transform(dynamic object) {
-  var type = object.runtimeType as Type;
-  var jsonOject = object.toJson() as Map;
-  var object2 = _unmarshal(jsonOject, type: type);
-  var jsonOject2 = object2.toJson();
+  final type = object.runtimeType;
+  final jsonOject = object.toJson() as Map;
+  final object2 = _unmarshal(jsonOject, type: type);
+  final jsonOject2 = object2.toJson();
   expect(jsonOject, jsonOject2);
 }
 
-T _unmarshal<T>(Map value, {Type type}) {
+T _unmarshal<T>(Map value, {Type? type}) {
   if (type == null) {
     type = T;
     if (type == dynamic) {
