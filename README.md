@@ -1,8 +1,13 @@
 # yaml2podo
 
-The `yaml2podo` is a generator and utility (all in one) that generates PODO classes to convert between JSON and Dart objects
+This package is no longer supported because it was flagged by Google Dart developers as being published by an unknown person.  
+Publisher Unknown.  
+As a normal person, I believe that hardly anyone would want to use software from unknown publishers.  
 
-Version 0.1.30
+Version 0.1.31
+
+
+The `yaml2podo` is a generator and utility (all in one) that generates PODO classes to convert between JSON and Dart objects
 
 ### Example of use.
 
