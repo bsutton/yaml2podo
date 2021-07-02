@@ -1,6 +1,10 @@
-## 0.1.31
+## 0.1.32
 
 - This package is no longer supported because it was flagged by Google Dart developers as being published by an unknown person. Publisher Unknown. As a normal person, I believe that hardly anyone would want to use software from unknown publishers.
+
+## 0.1.31
+
+- The Dart language version override number (@dart = 2.12) will be added to the comments of generated files
 
 ## 0.1.30
 

@@ -164,7 +164,7 @@ Map<K?, V?>? _toObjectMap<K, V>(data, V Function(Map) fromJson) {
   final map = _checkType<Map<K?, dynamic>>(data);
   for (final key in map.keys) {
     V? value;
-    var element = map[key];
+    final element = map[key];
     if (element != null) {
       final json = _checkType<Map>(element);
       value = fromJson(json);

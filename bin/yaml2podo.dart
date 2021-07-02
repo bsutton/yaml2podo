@@ -74,6 +74,7 @@ void main(List<String> args) {
   lines.add('// Version: ${version}');
   lines.add('// https://pub.dev/packages/yaml2podo');
   lines.add('// ignore_for_file: unused_element');
+  lines.add('// @dart = 2.12');
   lines.add('');
   lines.addAll(result);
   if (store) {
